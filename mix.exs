@@ -2,7 +2,7 @@ defmodule InfoCare.Mixfile do
   use Mix.Project
 
   def project do
-    [app: :kindy_now_qk,
+    [app: :infocare,
      version: "0.0.1",
      elixir: "~> 1.3.2",
      elixirc_paths: elixirc_paths(Mix.env),

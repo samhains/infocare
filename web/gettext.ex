@@ -20,5 +20,5 @@ defmodule InfoCare.Gettext do
 
   See the [Gettext Docs](https://hexdocs.pm/gettext) for detailed usage.
   """
-  use Gettext, otp_app: :kindy_now_qk
+  use Gettext, otp_app: :infocare
 end

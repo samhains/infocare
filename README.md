@@ -1,4 +1,4 @@
-# KindyNow QK Server
+# KindyNow Infocare Server
 
 ## Project Setup
 

@@ -6,11 +6,11 @@
 use Mix.Config
 
 # General application configuration
-config :kindy_now_qk,
+config :infocare,
   ecto_repos: [InfoCare.Repo]
 
 # Configures the endpoint
-config :kindy_now_qk, InfoCare.Endpoint,
+config :infocare, InfoCare.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "Yrc1uyQnEth2hD27kKcgJWzPQJOza9g+6EbTRehPOTT2AQ3joLrKgpFNTlQXU6Ou",
   render_errors: [view: InfoCare.ErrorView, accepts: ~w(html json)],

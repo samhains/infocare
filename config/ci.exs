@@ -6,7 +6,7 @@ use Mix.Config
 # The watchers configuration can be used to run external
 # watchers to your application. For example, we use it
 # with brunch.io to recompile .js and .css sources.
-config :kindy_now_qk, InfoCare.Endpoint,
+config :infocare, InfoCare.Endpoint,
   http: [port: 4000],
   debug_errors: true,
   server: false
@@ -20,7 +20,7 @@ config :logger, :console, format: "[$level] $message\n"
 config :phoenix, :stacktrace_depth, 20
 
 # Configure your database
-config :kindy_now_qk, InfoCare.Repo,
+config :infocare, InfoCare.Repo,
   adapter: Ecto.Adapters.Postgres,
   username: "ubuntu",
   password: "",
