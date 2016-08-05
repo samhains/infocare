@@ -1,27 +1,27 @@
 defmodule InfoCare.Service do
   use InfoCare.Web, :model
-  @derive {Poison.Encoder, only: [:id, :name, :qk_service_id, :email, :phone_number, :time_zone, :licensed_capacity, :street, :suburb, :state, :post_code, :rooms, :children]}
+  @derive {Poison.Encoder, only: [:ic_service_id, :name, :email, :currency, :licensed_capacity, :phone_number, :time_zone, :street, :suburb, :state, :country, :post_code]}
 
   schema "services" do
+    field :ic_service_id, :string
     field :name, :string
-    field :qk_service_id, :string
     field :email, :string
+    field :currency, :string
+    field :licensed_capacity, :string
     field :phone_number, :string
     field :time_zone, :string
-    field :licensed_capacity, :string
     field :street, :string
     field :suburb, :string
     field :state, :string
+    field :country, :string
     field :post_code, :string
-
-    # many_to_many :children, InfoCare.Child, join_through: :child_services
     has_many :rooms, InfoCare.Room
 
     timestamps
   end
 
-  @required_fields ~w(qk_service_id name)
-  @optional_fields ~w(email phone_number licensed_capacity time_zone suburb street suburb state post_code state post_code)
+  @required_fields ~w(:ic_service_id)
+  @optional_fields ~w(:name :email :currency :licensed_capacity :phone_number :time_zone :street :suburb :state :country :post_code @required_fields)
 
   @doc """
   Creates a changeset based on the `model` and `params`.

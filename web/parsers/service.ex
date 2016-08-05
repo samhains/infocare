@@ -24,7 +24,8 @@ defmodule InfoCare.ServiceParser do
   end
 
   defp parse_service service_data do
-    rooms_data = service_data["Rolls"]
+    IEx.pry
+    rooms_data = service_data["Rooms"]
 
     address_data = service_data["StreetAddress"]
     qk_service_id = service_data["service"] |> to_string

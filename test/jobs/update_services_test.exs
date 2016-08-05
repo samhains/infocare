@@ -11,7 +11,7 @@ defmodule InfoCare.UpdateServicesTest do
   import Ecto.Query
   import IEx
 
-  @get_services_url "https://www.qkenhanced.com.au/Enhanced.KindyNow/v1/odata/Services?$expand=Rolls"
+  @get_services_url "mockurl.com"
 
   defp mock_api_and_run_job do
     with_mock HTTPoison, [get: fn(_url, _headers) -> {:ok, ServiceMocks.valid_response} end] do
