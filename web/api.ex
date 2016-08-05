@@ -6,7 +6,7 @@ defmodule InfoCare.QkApi do
   import HTTPoison
  
 
-  @endpoint "https://www.qkenhanced.com.au/Enhanced.KindyNow/v1"
+  @endpoint ""
 
   def get_bookings_for_service service, start_date, end_date do
     url = @endpoint <> "/Bookings/GetAll?source=update&serviceIds="<> service.qk_service_id<>"&databaseId=5012&startDate="<>start_date<>"&endDate="<>end_date
