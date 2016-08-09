@@ -24,8 +24,8 @@ defmodule InfoCare.UpdateServicesTest do
 
   test "saves services and rooms to database given valid api response" do
     services = mock_api_and_run_job
-    assert Repo.one(from s in Service, select: count("*")) == 2
-    assert Repo.one(from r in Room, select: count("*")) == 12
+    assert Repo.one(from s in Service, select: count("*")) == 8
+    assert Repo.one(from r in Room, select: count("*")) == 4
   end
 
   test "returns error for invalid api response" do
