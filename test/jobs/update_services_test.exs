@@ -71,19 +71,4 @@ defmodule InfoCare.UpdateServicesTest do
     end
 
   end
-
-
-  # test "marks rooms that are no longer present in api response as inactive" do
-  #   mock_api_and_run_job
-  #   with_mock HTTPoison, [get: fn(_url, _headers) -> {:ok, ServiceMocks.less_rooms_response} end] do
-  #     HTTPoison.get(@get_services_url, [foo: :bar])
-  #     ic_room_id = "318858"
-  #     ic_room_id_2 = "319166"
-  #     services = InfoCare.UpdateServices.run
-  #     room = Repo.one(from r in Room, where: r.ic_room_id == ^ic_room_id)
-  #     room_2 = Repo.one(from r in Room, where: r.ic_room_id == ^ic_room_id_2)
-  #     assert room.active == false
-  #     assert room_2.active == true
-  #   end
-  # end
 end
