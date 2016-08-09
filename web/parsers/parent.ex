@@ -6,16 +6,16 @@ defmodule InfoCare.ParentParser do
   require IEx
 
 
-  # def all do
-  #   case Api.get_parents  do
-  #     {:ok, response} ->
-  #       parents = parse(response)
-  #       {:ok, parents}
-  #     {:error, error} ->
-  #       Logger.error (inspect error)
-  #       {:error, error}
-  #   end
-  # end
+  def all do
+    case Api.get_parents  do
+      {:ok, response} ->
+        parents = parse(response)
+        {:ok, parents}
+      {:error, error} ->
+        Logger.error (inspect error)
+        {:error, error}
+    end
+  end
 
   def parse response_data do
     response_data
