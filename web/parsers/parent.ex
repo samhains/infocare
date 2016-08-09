@@ -26,7 +26,7 @@ defmodule InfoCare.ParentParser do
 
   defp parse_parent parent_data do
     children_data = parent_data["Children"]
-    ic_parent_id = parent_data["ParentId"] |> to_string
+    ic_parent_id = parent_data["ParentID"] |> to_string
 
     children =
       children_data
@@ -34,28 +34,22 @@ defmodule InfoCare.ParentParser do
 
     %{
       ic_parent_id: ic_parent_id,
-      account_relationship: parent_data["AccountRelationship"],
-      phone: parent_data["MobilePhoneNumber"],
-      first_name: parent_data["GivenName"] ,
-      last_name: parent_data["Surname"],
+      first_name: parent_data["FirstName"] ,
+      last_name: parent_data["LastName"],
       children: children
      }
   end
 
   defp parse_child child_data do
-    IEx.pry
-    # %{"ChildID" => "e26821a7-887a-4272-b2b6-fbea566fb803", "DOB" => "2009-08-21",
-    #   "FirstName" => "Jane", "LastName" => "Doe",
-    #   "ServiceID" => "0322c866-862f-4cdf-a4aa-8113161825ce"}
     dob = child_data["DOB"]
-      ic_child_id: to_string(child_data["ChildId"]),
+    date = if dob, do: Timex.parse!(dob,"%F", :strftime)
 
     %{
-      ic_child_id: to_string(child_data["ChildId"]),
+      ic_child_id: to_string(child_data["ChildID"]),
       dob: date,
-      sync_id: child_data["SyncId"],
-      first_name: child_data["GivenName"],
-      last_name: child_data["Surname"]
+      first_name: child_data["FirstName"],
+      last_name: child_data["LastName"],
+      ic_service_id: child_data["ServiceID"]
     }
   end
 

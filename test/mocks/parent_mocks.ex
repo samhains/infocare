@@ -42,7 +42,7 @@ defmodule InfoCare.ParentMocks do
             "ServiceID": "0322c866-862f-4cdf-a4aa-8113161825ce",
             "FirstName": "Jane",
             "LastName": "Marks",
-            "DOB": "2009-08-1"
+            "DOB": "2009-08-01"
           }
         ]
       }]
