@@ -1,4 +1,4 @@
-defmodule InfoCare.QkApi do
+defmodule InfoCare.Api do
   require IEx
   require Logger
 

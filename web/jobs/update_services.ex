@@ -3,7 +3,6 @@ defmodule InfoCare.UpdateServices do
   alias InfoCare.Service
   alias InfoCare.Room
   alias InfoCare.Repo
-  alias InfoCare.QkApi
   alias InfoCare.ServiceParser
 
   import InfoCare.JobsHelper
@@ -27,12 +26,12 @@ defmodule InfoCare.UpdateServices do
   end
 
   defp insert_or_update_service service do
-    qk_service_id = service.qk_service_id
+    ic_service_id = service.ic_service_id
     rooms = service.rooms
 
     service_changeset = Service.changeset(%Service{}, service)
 
-    case Repo.one(from s in Service, where: s.qk_service_id == ^qk_service_id, preload: [:rooms]) do
+    case Repo.one(from s in Service, where: s.ic_service_id == ^ic_service_id, preload: [:rooms]) do
       record when is_nil record ->
         case Repo.insert(service_changeset) do
           {:ok, service} ->
@@ -43,8 +42,6 @@ defmodule InfoCare.UpdateServices do
         end
 
       record ->
-        make_missing_rooms_inactive record, rooms
-
         record
         |> Service.changeset(service)
         |> Repo.update
@@ -54,27 +51,11 @@ defmodule InfoCare.UpdateServices do
     end
   end
 
-  defp make_missing_rooms_inactive service, api_rooms do
-    api_room_ids =
-      api_rooms
-      |> Enum.map(fn (room) -> room.qk_room_id end)
-
-    existing_room_ids =
-      service.rooms
-      |> Enum.map(fn (room) -> room.qk_room_id end)
-
-    removed_rooms =
-      existing_room_ids
-      |> Enum.reject(fn(id) -> Enum.member?(api_room_ids, id) end)
-
-    from(r in Room, where: r.qk_room_id in ^removed_rooms)
-    |> Repo.update_all(set: [active: false])
-  end
 
   defp insert_or_update_rooms service, rooms do
     Enum.map(rooms, fn (room) ->
-      room_id = room.qk_room_id
-      query = from r in Room, where: r.qk_room_id == ^room_id
+      room_name = room.name
+      query = from r in Room, where: r.name == ^room_name
       room
       |> Map.put(:service_id, service.id)
       |> insert_record_and_print_errors Room, %Room{}, query

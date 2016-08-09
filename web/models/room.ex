@@ -4,25 +4,15 @@ defmodule InfoCare.Room do
   use InfoCare.Web, :model
   use Timex.Ecto.Timestamps
 
-  alias InfoCare.Mapper
-
   schema "rooms" do
     field :name, :string
-    field :min_age, :integer
-    field :max_age, :integer
-    field :capacity, :integer
-    field :active, :boolean
-    field :qk_room_id, :string
-    field :sync_id, :string
-    field :casual_booking_type, :string
     belongs_to :service, InfoCare.Service
-
     many_to_many :children, InfoCare.Child, join_through: :child_rooms
     timestamps
   end
 
-  @required_fields ~w(qk_room_id service_id active name sync_id)
-  @optional_fields ~w(capacity casual_booking_type min_age max_age)
+  @required_fields ~w(name service_id)
+  @optional_fields ~w()
 
   @doc """
   Creates a changeset based on the `model` and `params`.
@@ -31,15 +21,6 @@ defmodule InfoCare.Room do
   with no validation performed.
   """
   def changeset(model, params \\ :empty) do
-    qk_room_id =
-      if Map.has_key?(params, :qk_room_id) do
-        Map.get(params, :qk_room_id)
-      else
-        Map.get(model, :qk_room_id)
-      end
-
-    params = Map.put(params, :sync_id, Mapper.roll_id_to_roll_sync_id[qk_room_id])
-
     model
     |> cast(params, @required_fields, @optional_fields)
   end

@@ -3,7 +3,7 @@ defmodule InfoCare.ServiceFixtures do
 
   def service_1 do
     %Service{
-      qk_service_id: "317913",
+      ic_service_id: "317913",
       name: "Piper Central World of Learning",
       email: "pipercentral@worldoflearning.com.au",
       phone_number: "07 4154 2100",
