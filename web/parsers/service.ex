@@ -25,7 +25,7 @@ defmodule InfoCare.ServiceParser do
   defp parse_service service_data do
     rooms_data = service_data["Rooms"]
 
-    qk_service_id = service_data["service"] |> to_string
+    ic_service_id = service_data["service"] |> to_string
 
     rooms =
       rooms_data

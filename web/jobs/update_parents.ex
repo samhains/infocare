@@ -81,14 +81,14 @@ defmodule InfoCare.UpdateParents do
   end
 
   defp save_contact contact do
-    contact_id = contact.qk_contact_id
-    query = from c in Contact, where: c.qk_contact_id == ^contact_id
+    contact_id = contact.ic_contact_id
+    query = from c in Contact, where: c.ic_contact_id == ^contact_id
     insert_or_update_record_and_print_errors(contact, Contact, %Contact{}, query)
   end
 
   defp save_child child do
-    child_id = child.qk_child_id
-    query = from c in Child, where: c.qk_child_id == ^child_id
+    child_id = child.ic_child_id
+    query = from c in Child, where: c.ic_child_id == ^child_id
 
     insert_or_update_record_and_print_errors(child, Child, %Child{}, query)
   end

@@ -5,7 +5,7 @@ defmodule InfoCare.Child do
   schema "children" do
     field :first_name, :string
     field :last_name, :string
-    field :qk_child_id, :string
+    field :ic_child_id, :string
     field :dob, Timex.Ecto.Date
     field :sync_id, :string
     belongs_to :parent, InfoCare.Parent
@@ -16,7 +16,7 @@ defmodule InfoCare.Child do
     timestamps
   end
 
-  @required_fields ~w(qk_child_id)
+  @required_fields ~w(ic_child_id)
   @optional_fields ~w(sync_id dob parent_id first_name last_name dob sync_id)
   @doc """
   Creates a changeset based on the `model` and `params`.
@@ -27,7 +27,7 @@ defmodule InfoCare.Child do
   def changeset(model, params \\ :empty) do
     model
     |> cast(params, @required_fields, @optional_fields)
-    |> unique_constraint(:qk_child_id)
+    |> unique_constraint(:ic_child_id)
   end
 end
 

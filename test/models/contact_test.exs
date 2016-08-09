@@ -3,7 +3,7 @@ defmodule InfoCare.ContactTest do
 
   alias InfoCare.Contact
 
-  @valid_attrs %{qk_contact_id: "32432", account_relationship: "some content", first_name: "some content", last_name: "some content", phone: "some content"}
+  @valid_attrs %{ic_contact_id: "32432", account_relationship: "some content", first_name: "some content", last_name: "some content", phone: "some content"}
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do

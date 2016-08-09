@@ -4,7 +4,7 @@ defmodule InfoCare.BookingTest do
 
   alias InfoCare.Booking
 
-  @valid_attrs %{qk_booking_id: "123asdasdf4", date: "2010-04-17 14:00:00", end_time: "2010-04-17 14:00:00", fee: 42, start_time: "2010-04-17 14:00:00"}
+  @valid_attrs %{ic_booking_id: "123asdasdf4", date: "2010-04-17 14:00:00", end_time: "2010-04-17 14:00:00", fee: 42, start_time: "2010-04-17 14:00:00"}
   @invalid_attrs %{}
 
   @tag :skip

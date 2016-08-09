@@ -46,8 +46,8 @@ defmodule InfoCare.UpdateBookingsTest do
     with_mock HTTPoison, [get: fn(_url, _headers) -> {:ok, BookingMocks.valid_response} end] do
       HTTPoison.get("https://www.qkenhanced.com.au/Enhanced.KindyNow/v1/Bookings/GetAll?source=update&serviceIds=317913&databaseId=5012&startDate=2016-07-04&endDate=2016-07-18", [foo: :bar])
       InfoCare.UpdateBookings.run
-      qk_child_id = "1"
-      child =  Repo.one(from c in Child, where: c.qk_child_id == ^qk_child_id, preload: [:bookings, :services])
+      ic_child_id = "1"
+      child =  Repo.one(from c in Child, where: c.ic_child_id == ^ic_child_id, preload: [:bookings, :services])
       assert length(child.services) == 1
       assert length(child.bookings) == 2
     end

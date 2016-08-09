@@ -20,8 +20,8 @@ defmodule InfoCare.UpdateBookings do
   end
 
   def save_booking booking do
-    qk_booking_id = booking.qk_booking_id
-    query = from b in Booking, where: b.qk_booking_id == ^qk_booking_id
+    ic_booking_id = booking.ic_booking_id
+    query = from b in Booking, where: b.ic_booking_id == ^ic_booking_id
 
     booking
     |> insert_or_update_record_and_print_errors(Booking, %Booking{}, query)
@@ -49,12 +49,12 @@ defmodule InfoCare.UpdateBookings do
           child = Repo.one(from c in Child, where: c.sync_id == ^child_sync_id, preload: [:services])
 
           # create booking id here rather than in parser as it requires API request to get child
-          qk_booking_id =  date_string <> ":" <> room_id <> ":" <> to_string(child.id)
+          ic_booking_id =  date_string <> ":" <> room_id <> ":" <> to_string(child.id)
 
 
           services_changeset =
             child.services
-            |> prepend_to_list_if_unique(service, :qk_booking_id)
+            |> prepend_to_list_if_unique(service, :ic_booking_id)
             |> Enum.map(&Ecto.Changeset.change/1)
 
           Ecto.Changeset.change(child)
@@ -66,7 +66,7 @@ defmodule InfoCare.UpdateBookings do
           booking
           |> Map.delete(:child_sync_id)
           |> Map.put(:child_id, child.id)
-          |> Map.put(:qk_booking_id, qk_booking_id)
+          |> Map.put(:ic_booking_id, ic_booking_id)
           |> save_booking
 
         end)

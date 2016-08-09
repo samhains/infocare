@@ -4,7 +4,7 @@ defmodule InfoCare.Contact do
   schema "contacts" do
     field :first_name, :string
     field :last_name, :string
-    field :qk_contact_id, :string
+    field :ic_contact_id, :string
     field :phone, :string
     field :account_relationship, :string
     belongs_to :parent, InfoCare.Parent
@@ -12,7 +12,7 @@ defmodule InfoCare.Contact do
     timestamps
   end
 
-  @required_fields ~w(qk_contact_id)
+  @required_fields ~w(ic_contact_id)
   @optional_fields ~w(account_relationship phone first_name last_name)
 
   @doc """
@@ -24,7 +24,7 @@ defmodule InfoCare.Contact do
   def changeset(model, params \\ :empty) do
     model
     |> cast(params, @required_fields, @optional_fields)
-    |> unique_constraint(:qk_contact_id)
+    |> unique_constraint(:ic_contact_id)
   end
 end
 

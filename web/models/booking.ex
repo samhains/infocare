@@ -13,7 +13,7 @@ defmodule InfoCare.Booking do
     field :absent, :boolean
     field :rebooked, :boolean
     field :utilisation, :string
-    field :qk_booking_id, :string
+    field :ic_booking_id, :string
     field :day_status, :string
     field :permanent_booking, :string
     belongs_to :service, InfoCare.Service
@@ -25,7 +25,7 @@ defmodule InfoCare.Booking do
     timestamps
   end
 
-  @required_fields ~w(qk_booking_id)
+  @required_fields ~w(ic_booking_id)
   @optional_fields ~w(day_status date start_time end_time reminder_time expiry_time reminder_time absent rebooked utilisation day_status permanent_booking service_id contact_id child_id room_id booking_type_id)
 
   @doc """
