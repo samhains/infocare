@@ -1,4 +1,4 @@
-defmodule InfoCare.FamilyParser do
+defmodule InfoCare.ParentParser do
   alias InfoCare.QkApi
   alias Ecto.Date
   alias InfoCare.Repo
@@ -6,8 +6,8 @@ defmodule InfoCare.FamilyParser do
   require IEx
 
 
-  def by_service service do
-    case QkApi.get_families_by_service(service)  do
+  def all do
+    case QkApi.get_parents  do
       {:ok, response} ->
         families = parse(response)
         {:ok, families}
@@ -20,14 +20,14 @@ defmodule InfoCare.FamilyParser do
   def parse response_data do
     response_data
     |> Map.fetch!("value")
-    |> Enum.map(&parse_family/1)
+    |> Enum.map(&parse_parent/1)
   end
 
 
-  defp parse_family family_data do
-    contacts_data = family_data["Contacts"]
-    children_data = family_data["Children"]
-    qk_family_id = family_data["FamilyId"] |> to_string
+  defp parse_parent parent_data do
+    contacts_data = parent_data["Contacts"]
+    children_data = parent_data["Children"]
+    ic_parent_id = parent_data["ParentId"] |> to_string
 
     contacts =
       contacts_data
@@ -37,7 +37,7 @@ defmodule InfoCare.FamilyParser do
       |> Enum.map(&parse_child/1)
 
     %{
-      qk_family_id: qk_family_id,
+      ic_parent_id: ic_parent_id,
       contacts: contacts,
       children: children
      }

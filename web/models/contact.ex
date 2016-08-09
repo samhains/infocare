@@ -7,7 +7,7 @@ defmodule InfoCare.Contact do
     field :qk_contact_id, :string
     field :phone, :string
     field :account_relationship, :string
-    belongs_to :family, InfoCare.Family
+    belongs_to :parent, InfoCare.Parent
 
     timestamps
   end

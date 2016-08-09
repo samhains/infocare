@@ -2,10 +2,10 @@ defmodule InfoCare.UpdateFamiliesTest do
   use ExUnit.Case, async: false
   use InfoCare.ConnCase
 
-  alias InfoCare.Family
+  alias InfoCare.Parent
   alias InfoCare.Child
   alias InfoCare.Contact
-  alias InfoCare.FamilyMocks
+  alias InfoCare.ParentMocks
   alias InfoCare.SharedMocks
 
   import Mock
@@ -14,7 +14,7 @@ defmodule InfoCare.UpdateFamiliesTest do
 
 
   defp mock_api_and_run_job do
-    with_mock HTTPoison, [get: fn(_url, _headers) -> {:ok, FamilyMocks.valid_response } end] do
+    with_mock HTTPoison, [get: fn(_url, _headers) -> {:ok, ParentMocks.valid_response } end] do
       HTTPoison.get(@get_families_url, [foo: :bar])
       services = InfoCare.UpdateFamilies.update_families 1
     end
@@ -22,7 +22,7 @@ defmodule InfoCare.UpdateFamiliesTest do
 
   test "saves familes, children and contacts to database given valid api response" do
     mock_api_and_run_job
-    assert Repo.one(from f in Family, select: count("*")) == 3
+    assert Repo.one(from f in Parent, select: count("*")) == 3
     assert Repo.one(from c in Child, select: count("*")) == 4
     assert Repo.one(from c in Contact, select: count("*")) == 4
   end
@@ -42,26 +42,26 @@ defmodule InfoCare.UpdateFamiliesTest do
     assert ok == :ok
   end
 
-  test "associates family with the relevant child and contact" do
+  test "associates parent with the relevant child and contact" do
     mock_api_and_run_job
 
-    qk_family_id = "321222"
-    family = Repo.one(from f in Family, where: f.qk_family_id == ^qk_family_id, preload: [:children, :contacts])
-    assert length(family.children) == 1
-    assert length(family.contacts) == 2
+    ic_parent_id = "321222"
+    parent = Repo.one(from f in Parent, where: f.ic_parent_id == ^ic_parent_id, preload: [:children, :contacts])
+    assert length(parent.children) == 1
+    assert length(parent.contacts) == 2
   end
 
   test "updates existing services and their associations given valid inputs" do
     mock_api_and_run_job
 
-    with_mock HTTPoison, [get: fn(_url, _headers) -> {:ok, FamilyMocks.update_response } end] do
+    with_mock HTTPoison, [get: fn(_url, _headers) -> {:ok, ParentMocks.update_response } end] do
       HTTPoison.get(@get_families_url, [foo: :bar])
       services = InfoCare.UpdateFamilies.update_families 1
-      qk_family_id = "321222"
-      family = Repo.one(from f in Family, where: f.qk_family_id == ^qk_family_id, preload: [:children, :contacts])
-      child_1 = family.children |> List.first
-      contact_1 = family.contacts |> List.first
-      contact_2 = family.contacts |> List.last
+      ic_parent_id = "321222"
+      parent = Repo.one(from f in Parent, where: f.ic_parent_id == ^ic_parent_id, preload: [:children, :contacts])
+      child_1 = parent.children |> List.first
+      contact_1 = parent.contacts |> List.first
+      contact_2 = parent.contacts |> List.last
       assert Map.get(child_1, :last_name) == "Hains"
       assert Map.get(contact_1, :first_name) == "Samuel"
       assert Map.get(contact_2, :phone) == "0492 287 287"

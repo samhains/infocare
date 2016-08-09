@@ -1,11 +1,11 @@
 defmodule InfoCare.UpdateFamilies do
   require IEx
   require Logger
-  alias InfoCare.Family
+  alias InfoCare.Parent
   alias InfoCare.Child
   alias InfoCare.Contact
   alias InfoCare.Repo
-  alias InfoCare.FamilyParser
+  alias InfoCare.ParentParser
 
   import InfoCare.JobsHelper
   import Ecto.Query
@@ -16,7 +16,7 @@ defmodule InfoCare.UpdateFamilies do
 
   def update_families service do
 
-    maybe_families_data = FamilyParser.by_page
+    maybe_families_data = ParentParser.by_page
 
     case maybe_families_data do
       {:ok, families_data} ->
@@ -25,7 +25,7 @@ defmodule InfoCare.UpdateFamilies do
         families = families_data.families
 
         families
-          |> Enum.map(&insert_or_update_family/1)
+          |> Enum.map(&insert_or_update_parent/1)
 
         case next_url do
           next_url when is_nil next_url ->
@@ -46,36 +46,36 @@ defmodule InfoCare.UpdateFamilies do
 
   end
 
-  defp insert_or_update_family family do
-    qk_family_id = family.qk_family_id
-    family_changeset = Family.changeset(%Family{}, %{:qk_family_id => qk_family_id})
-    children = family.children
-    contacts = family.contacts
+  defp insert_or_update_parent parent do
+    ic_parent_id = parent.ic_parent_id
+    parent_changeset = Parent.changeset(%Parent{}, %{:ic_parent_id => ic_parent_id})
+    children = parent.children
+    contacts = parent.contacts
 
-    case Repo.one(from f in Family, where: f.qk_family_id == ^qk_family_id) do
+    case Repo.one(from f in Parent, where: f.ic_parent_id == ^ic_parent_id) do
       record when is_nil record ->
-        case Repo.insert(family_changeset) do
-          {:ok, family} ->
-            update_associations family, contacts, children
-            {:ok, family}
-          {:error, family_changeset} ->
-            Logger.error (inspect family_changeset.errors)
+        case Repo.insert(parent_changeset) do
+          {:ok, parent} ->
+            update_associations parent, contacts, children
+            {:ok, parent}
+          {:error, parent_changeset} ->
+            Logger.error (inspect parent_changeset.errors)
         end
      record ->
         update_associations record, contacts, children
     end
   end
 
-  defp update_associations family, contacts, children do
+  defp update_associations parent, contacts, children do
     children
     |> Enum.map(fn(child)->
-      Map.put(child, :family_id, family.id)
+      Map.put(child, :parent_id, parent.id)
     end)
     |> Enum.map(&save_child/1)
 
     contacts
     |> Enum.map(fn(contact)->
-      Map.put(contact, :family_id, family.id)
+      Map.put(contact, :parent_id, parent.id)
     end)
     |> Enum.map(&save_contact/1)
   end

@@ -1,15 +1,15 @@
-defmodule InfoCare.Family do
+defmodule InfoCare.Parent do
   use InfoCare.Web, :model
 
   schema "families" do
     has_many :children, InfoCare.Child
     has_many :contacts, InfoCare.Contact
-    field :qk_family_id, :string
+    field :ic_parent_id, :string
 
     timestamps
   end
 
-  @required_fields ~w(qk_family_id)
+  @required_fields ~w(ic_parent_id)
   @optional_fields ~w()
 
   @doc """
@@ -21,6 +21,6 @@ defmodule InfoCare.Family do
   def changeset(model, params \\ :empty) do
     model
     |> cast(params, @required_fields, @optional_fields)
-    |> unique_constraint(:qk_family_id)
+    |> unique_constraint(:ic_parent_id)
   end
 end

@@ -8,7 +8,7 @@ defmodule InfoCare.Child do
     field :qk_child_id, :string
     field :dob, Timex.Ecto.Date
     field :sync_id, :string
-    belongs_to :family, InfoCare.Family
+    belongs_to :parent, InfoCare.Parent
     has_many :bookings, InfoCare.Booking
     many_to_many :services, InfoCare.Service, join_through: "child_services"
     many_to_many :rooms, InfoCare.Room, join_through: "child_rooms"
@@ -17,7 +17,7 @@ defmodule InfoCare.Child do
   end
 
   @required_fields ~w(qk_child_id)
-  @optional_fields ~w(sync_id dob family_id first_name last_name dob sync_id)
+  @optional_fields ~w(sync_id dob parent_id first_name last_name dob sync_id)
   @doc """
   Creates a changeset based on the `model` and `params`.
 

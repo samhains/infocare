@@ -1,18 +1,18 @@
-defmodule InfoCare.FamilyTest do
+defmodule InfoCare.ParentTest do
   use InfoCare.ModelCase
 
-  alias InfoCare.Family
+  alias InfoCare.Parent
 
-  @valid_attrs %{qk_family_id: "324234"}
+  @valid_attrs %{ic_parent_id: "324234"}
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do
-    changeset = Family.changeset(%Family{}, @valid_attrs)
+    changeset = Parent.changeset(%Parent{}, @valid_attrs)
     assert changeset.valid?
   end
 
   test "changeset with invalid attributes" do
-    changeset = Family.changeset(%Family{}, @invalid_attrs)
+    changeset = Parent.changeset(%Parent{}, @invalid_attrs)
     refute changeset.valid?
   end
 end
