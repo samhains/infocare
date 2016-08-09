@@ -13,6 +13,12 @@ defmodule InfoCare.Api do
     |> make_post_request
   end
 
+  def get_parents_by_service service do
+    "getParent&ServiceID="<>service.id
+    |> build_url
+    |> make_post_request
+  end
+
   def build_url url do
     @endpoint <> url
   end

@@ -11,27 +11,12 @@ defmodule InfoCare.UpdateFamilies do
   import Ecto.Query
 
   def run do
-    parallel_update_families 1
- end
-
-  def parallel_update_families batch do
-    page_min = (20 * batch) - 19
-    page_max = 20 * batch
-    data =
-      page_min..page_max
-      |> ParallelStream.map(&update_families/1)
-      |> Enum.into([])
-    case Enum.find data, fn(x) -> x==-1 end do
-        nil ->
-          parallel_update_families(batch+1)
-        _ ->
-          Logger.info "Finished Updating Families"
-    end
+    # parallel_update_families 1
   end
 
-  def update_families page do
+  def update_families service do
 
-    maybe_families_data = page |> FamilyParser.by_page
+    maybe_families_data = FamilyParser.by_page
 
     case maybe_families_data do
       {:ok, families_data} ->

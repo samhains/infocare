@@ -6,19 +6,11 @@ defmodule InfoCare.FamilyParser do
   require IEx
 
 
-  def by_page page do
-    case QkApi.get_families(page)  do
+  def by_service service do
+    case QkApi.get_families_by_service(service)  do
       {:ok, response} ->
         families = parse(response)
-
-        url = response["@odata.nextLink"]
-        data =
-          %{
-            families: families,
-            next_url: url
-          }
-
-        {:ok, data}
+        {:ok, families}
       {:error, error} ->
         Logger.error (inspect error)
         {:error, error}
@@ -30,6 +22,7 @@ defmodule InfoCare.FamilyParser do
     |> Map.fetch!("value")
     |> Enum.map(&parse_family/1)
   end
+
 
   defp parse_family family_data do
     contacts_data = family_data["Contacts"]
