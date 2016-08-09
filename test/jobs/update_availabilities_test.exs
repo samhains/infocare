@@ -6,7 +6,7 @@ defmodule InfoCare.UpdateAvailabilitiessTest do
   alias InfoCare.Availability
   alias InfoCare.BookingMocks
   alias InfoCare.Repo
-  alias InfoCare.QkApi
+  alias InfoCare.Api
   alias InfoCare.SharedMocks
   alias InfoCare.ServiceFixtures
   alias InfoCare.RoomFixtures

@@ -1,5 +1,5 @@
 defmodule InfoCare.ParentParser do
-  alias InfoCare.QkApi
+  alias InfoCare.Api
   alias Ecto.Date
   alias InfoCare.Repo
   require Logger
@@ -7,7 +7,7 @@ defmodule InfoCare.ParentParser do
 
 
   def all do
-    case QkApi.get_parents  do
+    case Api.get_parents  do
       {:ok, response} ->
         families = parse(response)
         {:ok, families}

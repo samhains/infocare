@@ -5,7 +5,7 @@ defmodule InfoCare.UpdateBookings do
   alias InfoCare.Child
   alias InfoCare.Booking
   alias InfoCare.Repo
-  alias InfoCare.QkApi
+  alias InfoCare.Api
   alias InfoCare.BookingParser
 
   import InfoCare.JobsHelper

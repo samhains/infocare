@@ -1,5 +1,5 @@
 defmodule InfoCare.AvailabilityParser do
-  alias InfoCare.QkApi
+  alias InfoCare.Api
   alias InfoCare.Repo
   require Logger
 
@@ -23,7 +23,7 @@ defmodule InfoCare.AvailabilityParser do
   def by_service service, start_date, end_date do
     rooms = Repo.all Ecto.assoc(service, :rooms)
 
-    case QkApi.get_bookings_for_service(service, start_date, end_date)  do
+    case Api.get_bookings_for_service(service, start_date, end_date)  do
       {:ok, bookings_data} ->
         data =
           rooms
