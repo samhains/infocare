@@ -19,6 +19,12 @@ defmodule InfoCare.Api do
     |> make_post_request
   end
 
+  def get_parents do
+    "getParent"
+    |> build_url
+    |> make_post_request
+  end
+
   def build_url url do
     @endpoint <> url
   end

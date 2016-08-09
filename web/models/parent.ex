@@ -1,7 +1,7 @@
 defmodule InfoCare.Parent do
   use InfoCare.Web, :model
 
-  schema "families" do
+  schema "parents" do
     has_many :children, InfoCare.Child
     has_many :contacts, InfoCare.Contact
     field :ic_parent_id, :string

@@ -9,8 +9,8 @@ defmodule InfoCare.ParentParser do
   def all do
     case Api.get_parents  do
       {:ok, response} ->
-        families = parse(response)
-        {:ok, families}
+        parents = parse(response)
+        {:ok, parents}
       {:error, error} ->
         Logger.error (inspect error)
         {:error, error}

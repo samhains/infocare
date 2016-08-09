@@ -1,4 +1,4 @@
-defmodule InfoCare.UpdateFamilies do
+defmodule InfoCare.UpdateParents do
   require IEx
   require Logger
   alias InfoCare.Parent
@@ -11,20 +11,20 @@ defmodule InfoCare.UpdateFamilies do
   import Ecto.Query
 
   def run do
-    # parallel_update_families 1
+    # parallel_update_parents 1
   end
 
-  def update_families service do
+  def update_parents service do
 
-    maybe_families_data = ParentParser.by_page
+    maybe_parents_data = ParentParser.by_page
 
-    case maybe_families_data do
-      {:ok, families_data} ->
-        next_url = families_data.next_url
+    case maybe_parents_data do
+      {:ok, parents_data} ->
+        next_url = parents_data.next_url
 
-        families = families_data.families
+        parents = parents_data.parents
 
-        families
+        parents
           |> Enum.map(&insert_or_update_parent/1)
 
         case next_url do
@@ -38,7 +38,7 @@ defmodule InfoCare.UpdateFamilies do
             |> String.to_integer
             skip/100
         end
-        {:ok, families}
+        {:ok, parents}
       {:error, error} ->
         Logger.error (inspect error)
         {:error, error}

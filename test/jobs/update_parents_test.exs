@@ -1,4 +1,4 @@
-defmodule InfoCare.UpdateFamiliesTest do
+defmodule InfoCare.UpdateParents do
   use ExUnit.Case, async: false
   use InfoCare.ConnCase
 
@@ -10,13 +10,13 @@ defmodule InfoCare.UpdateFamiliesTest do
 
   import Mock
   import IEx
-  @get_families_url "https://www.qkenhanced.com.au/Enhanced.KindyNow/v1/odata/Families?$expand=Contacts,Children&$skip=200"
+  @get_parents_url "https://www.qkenhanced.com.au/Enhanced.KindyNow/v1/odata/Parents?$expand=Contacts,Children&$skip=200"
 
 
   defp mock_api_and_run_job do
     with_mock HTTPoison, [get: fn(_url, _headers) -> {:ok, ParentMocks.valid_response } end] do
-      HTTPoison.get(@get_families_url, [foo: :bar])
-      services = InfoCare.UpdateFamilies.update_families 1
+      HTTPoison.get(@get_parents_url, [foo: :bar])
+      services = InfoCare.UpdateParents.update_parents 1
     end
   end
 
@@ -29,8 +29,8 @@ defmodule InfoCare.UpdateFamiliesTest do
 
   test "returns error for invalid api response" do
     with_mock HTTPoison, [get: fn(_url, _headers) -> {:error, SharedMocks.invalid_response } end] do
-      HTTPoison.get(@get_families_url, [foo: :bar])
-      services = InfoCare.UpdateFamilies.update_families 1
+      HTTPoison.get(@get_parents_url, [foo: :bar])
+      services = InfoCare.UpdateParents.update_parents 1
       {error, reason} = services
       assert error == :error
     end
@@ -55,8 +55,8 @@ defmodule InfoCare.UpdateFamiliesTest do
     mock_api_and_run_job
 
     with_mock HTTPoison, [get: fn(_url, _headers) -> {:ok, ParentMocks.update_response } end] do
-      HTTPoison.get(@get_families_url, [foo: :bar])
-      services = InfoCare.UpdateFamilies.update_families 1
+      HTTPoison.get(@get_parents_url, [foo: :bar])
+      services = InfoCare.UpdateParents.update_parents 1
       ic_parent_id = "321222"
       parent = Repo.one(from f in Parent, where: f.ic_parent_id == ^ic_parent_id, preload: [:children, :contacts])
       child_1 = parent.children |> List.first
