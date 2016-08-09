@@ -6,16 +6,16 @@ defmodule InfoCare.ParentParser do
   require IEx
 
 
-  def all do
-    case Api.get_parents  do
-      {:ok, response} ->
-        parents = parse(response)
-        {:ok, parents}
-      {:error, error} ->
-        Logger.error (inspect error)
-        {:error, error}
-    end
-  end
+  # def all do
+  #   case Api.get_parents  do
+  #     {:ok, response} ->
+  #       parents = parse(response)
+  #       {:ok, parents}
+  #     {:error, error} ->
+  #       Logger.error (inspect error)
+  #       {:error, error}
+  #   end
+  # end
 
   def parse response_data do
     response_data
@@ -25,32 +25,22 @@ defmodule InfoCare.ParentParser do
 
 
   defp parse_parent parent_data do
-    contacts_data = parent_data["Contacts"]
+    IEx.pry
     children_data = parent_data["Children"]
     ic_parent_id = parent_data["ParentId"] |> to_string
 
-    contacts =
-      contacts_data
-      |> Enum.map(&parse_contact/1)
     children =
       children_data
       |> Enum.map(&parse_child/1)
 
     %{
       ic_parent_id: ic_parent_id,
-      contacts: contacts,
+      account_relationship: parent_data["AccountRelationship"],
+      phone: parent_data["MobilePhoneNumber"],
+      first_name: parent_data["GivenName"] ,
+      last_name: parent_data["Surname"],
       children: children
      }
-  end
-
-  defp parse_contact contact_data do
-    %{
-      qk_contact_id: to_string(contact_data["ContactId"]),
-      account_relationship: contact_data["AccountRelationship"],
-      phone: contact_data["MobilePhoneNumber"],
-      first_name: contact_data["GivenName"] ,
-      last_name: contact_data["Surname"]
-    }
   end
 
   defp parse_child child_data do

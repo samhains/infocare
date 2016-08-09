@@ -8,13 +8,13 @@ defmodule InfoCare.ParentParserTest do
   require IEx
 
   test "returns list of parents from api data and service list" do
-
     parents =
       ParentMocks.valid_response_body
       |> Poison.decode!
       |> ParentParser.parse
 
     first_parent = parents |> List.first
+    IEx.pry
     test_parent = %{}
 
     assert length(parents) == 3
