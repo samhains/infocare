@@ -47,10 +47,15 @@ defmodule InfoCare.UpdateServices do
         |> Repo.update
         |> response_handler
 
+        clear_rooms record
         insert_or_update_rooms record, rooms
     end
   end
 
+  defp clear_rooms service do
+    service_id = service.id
+    Repo.delete_all(from r in Room, where: r.service_id == ^service_id)
+  end
 
   defp insert_or_update_rooms service, rooms do
     Enum.map(rooms, fn (room) ->
