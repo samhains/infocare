@@ -23,7 +23,7 @@ defmodule InfoCare.UpdateAvailabilities do
     query = from a in Availability, where: [date: type(^availability.date, Timex.Ecto.DateTime), room_id: ^room_id]
 
     availability
-    |> insert_record_and_print_errors(Availability, %Availability{}, query)
+    |> insert_or_update_record_and_print_errors(Availability, %Availability{}, query)
   end
 
   def update_availabilities_for_service service do

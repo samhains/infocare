@@ -4,10 +4,18 @@ defmodule InfoCare.JobsHelper do
   import IEx
   import Logger
 
-  def insert_record params, model, struct, query do
+  def insert_or_update_record params, model, struct, query do
     insert_or_update_changeset(params, model, struct, query)
         |> Repo.insert_or_update
         |> response_handler
+  end
+
+  def insert_record params, model, struct do
+    params
+      |> Enum.into(struct)
+      |> model.changeset(%{})
+      |> Repo.insert
+      |> response_handler
   end
 
   def insert_or_update_changeset params, model, struct, query do
@@ -24,8 +32,8 @@ defmodule InfoCare.JobsHelper do
     end
   end
 
-  def insert_record_and_print_errors params, model, struct, query do
-    case insert_record(params, model, struct, query) do
+  def insert_or_update_record_and_print_errors params, model, struct, query do
+    case insert_or_update_record(params, model, struct, query) do
       {:ok, record} ->
         {:ok, record }
       {:error, error} ->

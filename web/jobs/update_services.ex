@@ -35,7 +35,7 @@ defmodule InfoCare.UpdateServices do
       record when is_nil record ->
         case Repo.insert(service_changeset) do
           {:ok, service} ->
-            insert_or_update_rooms service, rooms
+            insert_rooms service, rooms
             {:ok, service}
           {:error, service_changeset} ->
             Logger.error (inspect service_changeset.errors)
@@ -48,7 +48,7 @@ defmodule InfoCare.UpdateServices do
         |> response_handler
 
         clear_rooms record
-        insert_or_update_rooms record, rooms
+        insert_rooms record, rooms
     end
   end
 
@@ -57,13 +57,11 @@ defmodule InfoCare.UpdateServices do
     Repo.delete_all(from r in Room, where: r.service_id == ^service_id)
   end
 
-  defp insert_or_update_rooms service, rooms do
+  defp insert_rooms service, rooms do
     Enum.map(rooms, fn (room) ->
-      room_name = room.name
-      query = from r in Room, where: r.name == ^room_name
       room
       |> Map.put(:service_id, service.id)
-      |> insert_record_and_print_errors Room, %Room{}, query
+      |> insert_record(Room, %Room{})
     end)
   end
 

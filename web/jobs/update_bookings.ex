@@ -24,7 +24,7 @@ defmodule InfoCare.UpdateBookings do
     query = from b in Booking, where: b.qk_booking_id == ^qk_booking_id
 
     booking
-    |> insert_record_and_print_errors(Booking, %Booking{}, query)
+    |> insert_or_update_record_and_print_errors(Booking, %Booking{}, query)
   end
 
   def update_bookings_and_openings_for_service service do
