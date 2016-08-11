@@ -37,20 +37,17 @@ defmodule InfoCare.UpdateParents do
 
   defp insert_or_update_parent parent do
     ic_parent_id = parent.ic_parent_id
-    parent_changeset = Parent.changeset(%Parent{}, %{:ic_parent_id => ic_parent_id})
+    parent_params = parent |> Map.delete(:children)
+    parent_changeset = Parent.changeset(%Parent{}, parent_params)
     children = parent.children
+    query = from f in Parent, where: f.ic_parent_id == ^ic_parent_id
 
-    case Repo.one(from f in Parent, where: f.ic_parent_id == ^ic_parent_id) do
-      record when is_nil record ->
-        case Repo.insert(parent_changeset) do
-          {:ok, parent} ->
-            update_associations parent, children
-            {:ok, parent}
-          {:error, parent_changeset} ->
-            Logger.error (inspect parent_changeset.errors)
-        end
-     record ->
-        update_associations record, children
+    case insert_or_update_record(parent_params, Parent, %Parent{}, query) do
+      {:ok, parent} ->
+        update_associations parent, children
+        {:ok, parent}
+      {:error, parent_changeset} ->
+        Logger.error (inspect parent_changeset.errors)
     end
   end
 
