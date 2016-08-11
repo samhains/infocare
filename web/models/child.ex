@@ -6,18 +6,17 @@ defmodule InfoCare.Child do
     field :first_name, :string
     field :last_name, :string
     field :ic_child_id, :string
-    field :dob, Timex.Ecto.Date
-    field :sync_id, :string
+    field :dob, Timex.Ecto.DateTime
     belongs_to :parent, InfoCare.Parent
-    has_many :bookings, InfoCare.Booking
-    many_to_many :services, InfoCare.Service, join_through: "child_services"
-    many_to_many :rooms, InfoCare.Room, join_through: "child_rooms"
+    belongs_to :service, InfoCare.Service
+    # has_many :bookings, InfoCare.Booking
+    # many_to_many :rooms, InfoCare.Room, join_through: "child_rooms"
 
     timestamps
   end
 
-  @required_fields ~w(ic_child_id)
-  @optional_fields ~w(sync_id dob parent_id first_name last_name dob sync_id)
+  @required_fields ~w(ic_child_id parent_id)
+  @optional_fields ~w(dob first_name service_id last_name)
   @doc """
   Creates a changeset based on the `model` and `params`.
 

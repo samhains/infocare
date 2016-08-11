@@ -3,6 +3,7 @@ defmodule InfoCare.UpdateParents do
   require Logger
   alias InfoCare.Parent
   alias InfoCare.Child
+  alias InfoCare.Service
   alias InfoCare.Contact
   alias InfoCare.Repo
   alias InfoCare.ParentParser
@@ -10,14 +11,22 @@ defmodule InfoCare.UpdateParents do
   import InfoCare.JobsHelper
   import Ecto.Query
 
-  def update_parents do
 
-    maybe_parents_data = ParentParser.all
+  def run do
+    Repo.all(Service)
+    |> Stream.map(&update_parents_for_service/1)
+    |> Stream.run
+  end
+
+  def update_parents_for_service service do
+
+    maybe_parents_data = ParentParser.by_service service
 
     case maybe_parents_data do
       {:ok, parents_data} ->
-        parents_data
-          |> Enum.map(&insert_or_update_parent/1)
+        parents =
+          parents_data
+            |> Enum.map(&insert_or_update_parent/1)
         {:ok, parents}
       {:error, error} ->
         Logger.error (inspect error)
@@ -48,7 +57,13 @@ defmodule InfoCare.UpdateParents do
   defp update_associations parent, children do
     children
     |> Enum.map(fn(child)->
-      Map.put(child, :parent_id, parent.id)
+      ic_service_id = child.ic_service_id
+      service = Repo.one(from s in Service, where: s.ic_service_id == ^ic_service_id)
+
+      child
+      |> Map.put(:parent_id, parent.id)
+      |> Map.put(:service_id, service.id)
+      |> Map.delete(:ic_service_id)
     end)
     |> Enum.map(&save_child/1)
   end

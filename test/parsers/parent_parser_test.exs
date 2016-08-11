@@ -14,7 +14,14 @@ defmodule InfoCare.ParentParserTest do
       |> ParentParser.parse
 
     first_parent = parents |> List.first
-    test_parent = %{children: [%{dob: ~N[2009-08-21 00:00:00], first_name: "Jane", ic_child_id: "e26821a7-887a-4272-b2b6-fbea566fb803", ic_service_id: "0322c866-862f-4cdf-a4aa-8113161825ce", last_name: "Doe"}, %{dob: ~N[2009-08-21 00:00:00], first_name: "Jim", ic_child_id: "e26821a7-887a-4272-b2b6-fbea566fb805", ic_service_id: "0322c866-862f-4cdf-a4aa-811316182lcf", last_name: "Doe"}], first_name: "John", ic_parent_id: "2a8a0c03-8a75-464a-8ed1-aefd87284e7c", last_name: "Doe"}
+    test_parent =
+      %{
+        children: [%{dob: ~N[2012-01-10 00:00:00], first_name: "Barry", ic_child_id: "712", ic_service_id: "671", last_name: "White"}, %{dob: ~N[2012-01-10 00:00:00], first_name: "Barry", ic_child_id: "739", ic_service_id: "679", last_name: "White"}],
+        first_name: "Phil",
+        ic_parent_id: "5303",
+        last_name: "Snowdon"
+      }
+
 
     assert length(parents) == 2
     assert Map.equal?(test_parent, first_parent)

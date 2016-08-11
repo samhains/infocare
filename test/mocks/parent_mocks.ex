@@ -9,44 +9,7 @@ defmodule InfoCare.ParentMocks do
 
   def valid_response_body do
     ~s(
-        {
-        "Status": "OK",
-        "Parents": [{
-          "ParentID": "2a8a0c03-8a75-464a-8ed1-aefd87284e7c",
-          "FirstName": "John",
-          "LastName": "Doe",
-          "Children": [
-            {
-              "ChildID": "e26821a7-887a-4272-b2b6-fbea566fb803",
-              "ServiceID": "0322c866-862f-4cdf-a4aa-8113161825ce",
-              "FirstName": "Jane",
-              "LastName": "Doe",
-              "DOB": "2009-08-21"
-            },
-            {
-              "ChildID": "e26821a7-887a-4272-b2b6-fbea566fb805",
-              "ServiceID": "0322c866-862f-4cdf-a4aa-811316182lcf",
-              "FirstName": "Jim",
-              "LastName": "Doe",
-              "DOB": "2009-08-21"
-            }
-          ]
-      },
-      {
-        "ParentID": "2a8a0c03-8a75-464a-8ed1-aefd87284e7d",
-        "FirstName": "Sally",
-        "LastName": "Marks",
-        "Children": [
-          {
-            "ChildID": "e26821a7-887a-4272-b2b6-fbea566fb805",
-            "ServiceID": "0322c866-862f-4cdf-a4aa-8113161825ce",
-            "FirstName": "Jane",
-            "LastName": "Marks",
-            "DOB": "2009-08-01"
-          }
-        ]
-      }]
-        }
+      {"Status":"OK","Parents":[{"ParentID":"5303","FirstName":"Phil","LastName":"Snowdon","Children":[{"ChildID":"712","ServiceID":"671","FirstName":"Barry","LastName":"White","DOB":"2012-01-10"},{"ChildID":"739","ServiceID":"679","FirstName":"Barry","LastName":"White","DOB":"2012-01-10"}]},{"ParentID":"5284","FirstName":"Mary","LastName":"White","Children":[{"ChildID":"712","ServiceID":"671","FirstName":"Barry","LastName":"White","DOB":"2012-01-10"},{"ChildID":"739","ServiceID":"679","FirstName":"Barry","LastName":"White","DOB":"2012-01-10"}]}]}
     )
   end
 
