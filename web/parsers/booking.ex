@@ -2,45 +2,38 @@ defmodule InfoCare.BookingParser do
   alias InfoCare.Api
   alias InfoCare.Repo
   require Logger
+  require IEx
 
-  def parse bookings_api_map, service  do
+  # {"BookingID":"136892","ChildID":"742","ParentID":"5305","Date":"2016-07-14","StartTime":"07:00","EndTime":"12:40","Absent":"false"}
+  def parse bookings_api_map do
+    bookings_api_map
+    |> Enum.map(&parse_booking/1)
+  end
 
-    for {room_id, room_bookings} <- bookings_api_map,
-        is_map(room_bookings),
-        {date_string, room_hash} <- room_bookings,
-        is_map(room_hash),
-        {child_sync_id, booking_hash} <- room_hash["ChildSyncIdChildDateValueMap"],
-        child_sync_id != "$id" do
-          date = Timex.parse!(date_string, "%FT%T", :strftime)
-          status = booking_hash["DayStatus"];
+  def parse_booking booking_map do
+    date_string = booking_map["Date"]
+    date = Timex.parse!(date_string, "%F", :strftime)
+    start_time_string = date_string <> booking_map["StartTime"]
+    end_time_string = date_string <> booking_map["EndTime"]
 
-          %{
-            date: date,
-            room_id: room_id,
-            utilisation: to_string(booking_hash["Utilisation"]),
-            permanent_booking: to_string(booking_hash["PermanentBooking"]),
-            absent: status == 2,
-            service_id: service.id,
-            child_sync_id: child_sync_id,
-            start_time: Timex.shift(date, hours: 12, minutes: 0),
-            end_time: Timex.shift(date, hours: 13, minutes: 0),
-            day_status: to_string(status),
-            expiry_time: Timex.shift(date, hours: 13, minutes: 0),
-            reminder_time: Timex.shift(date, hours: 8, minutes: 0),
-          }
-      end
+    start_time = Timex.parse!(start_time_string, "%F%T", :strftime)
+    end_time = Timex.parse!(start_time_string, "%F%T", :strftime)
+
+    %{
+      ic_booking_id: booking_map["BookingID"],
+      ic_child_id: booking_map["BookingID"],
+      date: date,
+      start_time: start_time,
+      end_time: end_time
+    }
   end
 
   def by_service service, start_date, end_date do
-    rooms = Repo.all Ecto.assoc(service, :rooms)
-
-    case Api.get_bookings_for_service(service, start_date, end_date)  do
+    case Api.get_bookings_by_service(service, start_date, end_date)  do
       {:ok, bookings_data} ->
-        data =
-          rooms
-          |> Enum.reduce(%{}, fn(room, total) -> Map.put(total, room.id, bookings_data[room.sync_id]) end)
-          |> parse(service)
-        {:ok, data}
+        bookings =
+          parse(bookings_data)
+        {:ok, bookings}
       {:error, error} ->
         Logger.error (inspect error.reason)
         {:error, error}
