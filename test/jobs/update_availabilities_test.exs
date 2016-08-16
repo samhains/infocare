@@ -20,20 +20,6 @@ defmodule InfoCare.UpdateAvailabilitiessTest do
 
   defp prepare_db do
     service = ServiceFixtures.service_1 |> Repo.insert!
-    service |> RoomFixtures.room_1 |> Repo.insert!
-    service |> RoomFixtures.room_2 |> Repo.insert!
-  end
-
-  def room_1_id do
-    room_1_sync_id = "c6265ed4-1471-e211-a3ad-5ef3fc0d484b"
-    room_1 = Repo.one(from r in Room, where: r.sync_id == ^room_1_sync_id)
-    room_1.id
-  end
-
-  def room_2_id do
-    room_2_sync_id = "c5265ed4-1471-e211-a3ad-5ef3fc0d484b"
-    room_2 = Repo.one(from r in Room, where: r.sync_id == ^room_2_sync_id)
-    room_2.id
   end
 
   test "saves availabilities to database" do
