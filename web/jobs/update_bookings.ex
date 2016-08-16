@@ -3,6 +3,7 @@ defmodule InfoCare.UpdateBookings do
   use Timex
   alias InfoCare.Service
   alias InfoCare.Child
+  alias InfoCare.Parent
   alias InfoCare.Booking
   alias InfoCare.Repo
   alias InfoCare.Api
@@ -29,6 +30,20 @@ defmodule InfoCare.UpdateBookings do
     |> insert_or_update_record_and_print_errors(Booking, %Booking{}, query)
   end
 
+  def associate_child(booking) do
+    ic_child_id = booking.ic_child_id
+    child = Repo.one(from c in Child, where: c.ic_child_id == ^ic_child_id)
+    child_id = if child, do: child.id
+    booking |> Map.put(:child_id, child_id)
+  end
+
+  def associate_parent(booking) do
+    ic_parent_id = booking.ic_parent_id
+    parent = Repo.one(from c in Parent, where: c.ic_parent_id == ^ic_parent_id)
+    parent_id = if parent, do: parent.id
+    booking |> Map.put(:parent_id, parent_id)
+  end
+
   def update_bookings_for_service service do
 
     {:ok, start_date} =
@@ -44,7 +59,12 @@ defmodule InfoCare.UpdateBookings do
       {:ok, bookings} ->
         saved_bookings =
           bookings
-          |> Enum.map(&save_booking/1)
+          |> Enum.map(fn (booking) ->
+              booking
+              |> associate_child
+              |> associate_parent
+              |> save_booking
+            end)
         {:ok, saved_bookings}
       {:error, error} ->
         Logger.error (inspect error.reason)
