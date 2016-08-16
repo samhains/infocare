@@ -5,15 +5,9 @@ defmodule InfoCare.BookingParser do
   require IEx
 
   def parse bookings_api_map, service do
-    case Map.fetch(bookings_api_map, "Bookings") do
-      {:ok, bookings_data} ->
-        bookings =
-          Enum.map(bookings_data, fn (booking) -> parse_booking(booking, service) end)
-        {:ok, bookings}
-      {:error, error} ->
-        Logger.error("There was a problem fetching 'Bookings' from the Bookings Map received")
-        Logger.error(inspect error)
-    end
+    bookings_api_map
+    |> Map.fetch!("Bookings")
+    |> Enum.map(fn (booking) -> parse_booking(booking, service) end)
   end
 
   def parse_booking booking_map, service do
@@ -27,7 +21,7 @@ defmodule InfoCare.BookingParser do
 
     %{
       ic_booking_id: booking_map["BookingID"],
-      absent: booking_map["Absent"],
+      absent:  String.to_existing_atom(booking_map["Absent"]),
       ic_child_id: booking_map["ChildID"],
       ic_parent_id: booking_map["ParentID"],
       service_id: service.id,

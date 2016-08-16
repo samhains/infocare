@@ -20,13 +20,13 @@ defmodule InfoCare.BookingParserTest do
   test "returns list of bookings from api data and service array" do
     service = prepare_db
 
-    {:ok, bookings } =
+    bookings =
       BookingMocks.valid_response_body
       |> Poison.decode!
       |> BookingParser.parse(service)
 
     test_booking =
-      %{absent: "false", date: ~N[2016-07-04 00:00:00],
+      %{absent: false, date: ~N[2016-07-04 00:00:00],
         end_time: ~N[2016-07-04 12:40:00], ic_booking_id: "136743",
         ic_child_id: "672", ic_parent_id: "5253",
         start_time: ~N[2016-07-04 07:00:00]}
