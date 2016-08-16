@@ -4,7 +4,6 @@ defmodule InfoCare.BookingParser do
   require Logger
   require IEx
 
-  # {"BookingID":"136892","ChildID":"742","ParentID":"5305","Date":"2016-07-14","StartTime":"07:00","EndTime":"12:40","Absent":"false"}
   def parse bookings_api_map, service do
     case Map.fetch(bookings_api_map, "Bookings") do
       {:ok, bookings_data} ->

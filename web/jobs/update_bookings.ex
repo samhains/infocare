@@ -15,7 +15,8 @@ defmodule InfoCare.UpdateBookings do
 
   def run do
     Repo.all(Service)
-    |> Stream.map(&update_bookings_and_openings_for_service/1)
+  # {"BookingID":"136892","ChildID":"742","ParentID":"5305","Date":"2016-07-14","StartTime":"07:00","EndTime":"12:40","Absent":"false"}
+    |> Stream.map(&update_bookings_for_service/1)
     |> Stream.run
   end
 
@@ -27,7 +28,7 @@ defmodule InfoCare.UpdateBookings do
     |> insert_or_update_record_and_print_errors(Booking, %Booking{}, query)
   end
 
-  def update_bookings_and_openings_for_service service do
+  def update_bookings_for_service service do
 
     {:ok, start_date} =
       Timex.now
@@ -48,10 +49,6 @@ defmodule InfoCare.UpdateBookings do
           child_sync_id = booking.child_sync_id
           child = Repo.one(from c in Child, where: c.sync_id == ^child_sync_id, preload: [:services])
 
-          # create booking id here rather than in parser as it requires API request to get child
-          ic_booking_id =  date_string <> ":" <> room_id <> ":" <> to_string(child.id)
-
-
           services_changeset =
             child.services
             |> prepend_to_list_if_unique(service, :ic_booking_id)
@@ -66,7 +63,6 @@ defmodule InfoCare.UpdateBookings do
           booking
           |> Map.delete(:child_sync_id)
           |> Map.put(:child_id, child.id)
-          |> Map.put(:ic_booking_id, ic_booking_id)
           |> save_booking
 
         end)
