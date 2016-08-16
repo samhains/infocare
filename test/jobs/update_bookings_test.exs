@@ -25,7 +25,7 @@ defmodule InfoCare.UpdateBookingsTest do
 
   test "saves bookings to database" do
     prepare_db
-    with_mock HTTPoison, [post: fn(_url, _headers) -> {:ok, BookingMocks.valid_response} end] do
+    with_mock HTTPoison, [post: fn(_url, _body) -> {:ok, BookingMocks.valid_response} end] do
       HTTPoison.post(@get_bookings_url, [foo: :bar])
       InfoCare.UpdateBookings.run
       assert Repo.one(from b in Booking, select: count("*")) == 191
@@ -36,7 +36,7 @@ defmodule InfoCare.UpdateBookingsTest do
 
   test "booking is associated with service, parent and child" do
     prepare_db
-    with_mock HTTPoison, [post: fn(_url, _headers) -> {:ok, BookingMocks.valid_response} end] do
+    with_mock HTTPoison, [post: fn(_url, _body) -> {:ok, BookingMocks.valid_response} end] do
       HTTPoison.post(@get_bookings_url, [foo: :bar])
       InfoCare.UpdateBookings.run
 
@@ -52,25 +52,20 @@ defmodule InfoCare.UpdateBookingsTest do
     end
   end
 
-  # test "will update booking information if it changes" do
-  #   prepare_db
-  #   with_mock HTTPoison, [post: fn(_url, _headers) -> {:ok, BookingMocks.valid_response} end] do
-  #     HTTPoison.post(@get_bookings_url, [foo: :bar])
-  #     InfoCare.UpdateBookings.run
-  #   end
-  #   with_mock HTTPoison, [post: fn(_url, _headers) -> {:ok, BookingMocks.booking_change_response} end] do
-  #     HTTPoison.post(@get_bookings_url, [foo: :bar])
-  #     InfoCare.UpdateBookings.run
-  #     sync_id = "0f94ff68-ea49-e411-a741-5ef3fc0d484b"
-  #     child =  Repo.one(from c in Child, where: c.sync_id == ^sync_id, preload: [:bookings])
+  test "will update booking information if it changes" do
+    prepare_db
+    with_mock HTTPoison, [post: fn(_url, _body) -> {:ok, BookingMocks.valid_response} end] do
+      HTTPoison.post(@get_bookings_url, [foo: :bar])
+      InfoCare.UpdateBookings.run
+    end
 
-  #     booking_1 = List.first child.bookings
-  #     booking_2 = List.last child.bookings
+    with_mock HTTPoison, [post: fn(_url, _body) -> {:ok, BookingMocks.update_response} end] do
+      HTTPoison.post(@get_bookings_url, [foo: :bar])
+      InfoCare.UpdateBookings.run
 
-  #     assert Repo.one(from c in Child, select: count("*")) == 6
-  #     assert Repo.one(from b in Booking, select: count("*")) == 8
-  #     assert booking_1.day_status == "2"
-  #     assert booking_2.day_status == "2"
-  #   end
-  # end
+      ic_booking_id = "136743"
+      booking =  Repo.one(from b in Booking, where: b.ic_booking_id == ^ic_booking_id, preload: [:service, :child])
+      assert booking.absent == true
+    end
+  end
 end
