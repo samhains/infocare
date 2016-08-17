@@ -30,7 +30,7 @@ defmodule InfoCare.UpdateParentsTest do
     assert Repo.one(from f in Parent, select: count("*")) == 2
     assert Repo.one(from c in Child, select: count("*")) == 4
   end
-  
+
   test "associates parent with the relevant child" do
     mock_api_and_run_job
 

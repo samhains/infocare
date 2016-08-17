@@ -33,16 +33,34 @@ defmodule InfoCare.UpdateBookingsTest do
 
   test "saves bookings to database" do
     prepare_db
-    with_mock HTTPoison, [post: fn(_url, _body, _headers) -> {:ok, BookingMocks.valid_response} end] do
+    with_mock HTTPoison, [post: fn(_url, _body, _header) -> {:ok, BookingMocks.valid_response} end] do
       HTTPoison.post(@get_bookings_url, %{}, [foo: :bar])
       InfoCare.UpdateBookings.run
       assert Repo.one(from b in Booking, select: count("*")) == 191
     end
   end
 
+  test "add_age_to_booking updates booking correctly for children older than two" do
+    service = prepare_db
+    child = ChildFixtures.child_1(service)
+    add_age_to_booking_test(child, true)
+  end
+
+  test "add_age_to_booking updates booking correctly for children under two" do
+    service = prepare_db
+    child = ChildFixtures.child_2(service)
+    add_age_to_booking_test(child, false)
+  end
+
+  test "add_age_to_booking updates booking correctly for children that are two" do
+    service = prepare_db
+    child = ChildFixtures.child_3(service)
+    add_age_to_booking_test(child, true)
+  end
+
   test "booking is associated with service, parent and child" do
     prepare_db
-    with_mock HTTPoison, [post: fn(_url, _body, _headers) -> {:ok, BookingMocks.valid_response} end] do
+    with_mock HTTPoison, [post: fn(_url, _body, _header) -> {:ok, BookingMocks.valid_response} end] do
       HTTPoison.post(@get_bookings_url, %{}, [foo: :bar])
       InfoCare.UpdateBookings.run
 
@@ -60,12 +78,12 @@ defmodule InfoCare.UpdateBookingsTest do
 
   test "will update booking information if it changes" do
     prepare_db
-    with_mock HTTPoison, [post: fn(_url, _body, _headers) -> {:ok, BookingMocks.valid_response} end] do
+    with_mock HTTPoison, [post: fn(_url, _body, _header) -> {:ok, BookingMocks.valid_response} end] do
       HTTPoison.post(@get_bookings_url, %{}, [foo: :bar])
       InfoCare.UpdateBookings.run
     end
 
-    with_mock HTTPoison, [post: fn(_url, _body, _headers) -> {:ok, BookingMocks.update_response} end] do
+    with_mock HTTPoison, [post: fn(_url, _body, _header) -> {:ok, BookingMocks.update_response} end] do
       HTTPoison.post(@get_bookings_url, %{}, [foo: :bar])
       InfoCare.UpdateBookings.run
 
