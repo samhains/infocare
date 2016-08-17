@@ -19,11 +19,20 @@ defmodule InfoCare.Api do
 
     "getParentsByService"
     |> build_url
-    |> make_post_request(body)
+    |> make_post_request(form_body)
   end
 
-  def get_parents do
-    "getParent"
+  def get_bookings_by_service service, start_date, end_date do
+    body =
+      ~s({
+          "ServiceID": "#{service.id}",
+          "BookingFromDate": "#{start_date}",
+          "BookingToDate": "#{end_date}"
+          }
+        )
+      |> form_body
+
+    "getBookingsByService"
     |> build_url
     |> make_post_request(form_body)
   end

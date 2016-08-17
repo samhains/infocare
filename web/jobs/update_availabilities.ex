@@ -40,6 +40,7 @@ defmodule InfoCare.UpdateAvailabilities do
     # get the bookings for the date range for the service
 
     case AvailabilityParser.by_service(service, start_date, end_date)  do
+
       {:ok, availabilities} ->
         data =
           availabilities

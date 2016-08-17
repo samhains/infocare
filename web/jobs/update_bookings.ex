@@ -3,6 +3,7 @@ defmodule InfoCare.UpdateBookings do
   use Timex
   alias InfoCare.Service
   alias InfoCare.Child
+  alias InfoCare.Parent
   alias InfoCare.Booking
   alias InfoCare.Repo
   alias InfoCare.Api
@@ -15,7 +16,7 @@ defmodule InfoCare.UpdateBookings do
 
   def run do
     Repo.all(Service)
-    |> Stream.map(&update_bookings_and_openings_for_service/1)
+    |> Stream.map(&update_bookings_for_service/1)
     |> Stream.run
   end
 
@@ -24,10 +25,26 @@ defmodule InfoCare.UpdateBookings do
     query = from b in Booking, where: b.ic_booking_id == ^ic_booking_id
 
     booking
+    |> Map.delete(:ic_child_id)
+    |> Map.delete(:ic_parent_id)
     |> insert_or_update_record_and_print_errors(Booking, %Booking{}, query)
   end
 
-  def update_bookings_and_openings_for_service service do
+  def associate_child(booking) do
+    ic_child_id = booking.ic_child_id
+    child = Repo.one(from c in Child, where: c.ic_child_id == ^ic_child_id)
+    child_id = if child, do: child.id
+    booking |> Map.put(:child_id, child_id)
+  end
+
+  def associate_parent(booking) do
+    ic_parent_id = booking.ic_parent_id
+    parent = Repo.one(from c in Parent, where: c.ic_parent_id == ^ic_parent_id)
+    parent_id = if parent, do: parent.id
+    booking |> Map.put(:parent_id, parent_id)
+  end
+
+  def update_bookings_for_service service do
 
     {:ok, start_date} =
       Timex.now
@@ -41,35 +58,13 @@ defmodule InfoCare.UpdateBookings do
     case BookingParser.by_service(service, start_date, end_date)  do
       {:ok, bookings} ->
         saved_bookings =
-        bookings
-        |> Enum.map(fn(booking) ->
-          date_string = Timex.format!(booking.date, "%FT%T", :strftime)
-          room_id = booking.room_id |> to_string
-          child_sync_id = booking.child_sync_id
-          child = Repo.one(from c in Child, where: c.sync_id == ^child_sync_id, preload: [:services])
-
-          # create booking id here rather than in parser as it requires API request to get child
-          ic_booking_id =  date_string <> ":" <> room_id <> ":" <> to_string(child.id)
-
-
-          services_changeset =
-            child.services
-            |> prepend_to_list_if_unique(service, :ic_booking_id)
-            |> Enum.map(&Ecto.Changeset.change/1)
-
-          Ecto.Changeset.change(child)
-          |> Ecto.Changeset.put_assoc(:services, services_changeset)
-          |> Repo.update
-          |> response_handler
-
-          # update child associations
-          booking
-          |> Map.delete(:child_sync_id)
-          |> Map.put(:child_id, child.id)
-          |> Map.put(:ic_booking_id, ic_booking_id)
-          |> save_booking
-
-        end)
+          bookings
+          |> Enum.map(fn (booking) ->
+              booking
+              |> associate_child
+              |> associate_parent
+              |> save_booking
+            end)
         {:ok, saved_bookings}
       {:error, error} ->
         Logger.error (inspect error.reason)

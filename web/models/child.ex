@@ -6,11 +6,10 @@ defmodule InfoCare.Child do
     field :first_name, :string
     field :last_name, :string
     field :ic_child_id, :string
-    field :dob, Timex.Ecto.DateTime
+    field :dob, Timex.Ecto.Date
     belongs_to :parent, InfoCare.Parent
     belongs_to :service, InfoCare.Service
-    # has_many :bookings, InfoCare.Booking
-    # many_to_many :rooms, InfoCare.Room, join_through: "child_rooms"
+    has_many :bookings, InfoCare.Booking
 
     timestamps
   end

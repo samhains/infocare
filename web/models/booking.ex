@@ -3,30 +3,20 @@ defmodule InfoCare.Booking do
   use InfoCare.Web, :model
 
   schema "bookings" do
-    field :date, Timex.Ecto.DateTime
-    field :fee, :integer
+    field :ic_booking_id, :string
     field :start_time, Timex.Ecto.DateTime
     field :end_time, Timex.Ecto.DateTime
-    field :reminder_time, Timex.Ecto.DateTime
-    field :expiry_time, Timex.Ecto.DateTime
-    field :reminder_send, :boolean
+    field :date, Timex.Ecto.DateTime
     field :absent, :boolean
-    field :rebooked, :boolean
-    field :utilisation, :string
-    field :ic_booking_id, :string
-    field :day_status, :string
-    field :permanent_booking, :string
     belongs_to :service, InfoCare.Service
-    belongs_to :contact, InfoCare.Contact
+    belongs_to :parent, InfoCare.Parent
     belongs_to :child, InfoCare.Child
-    belongs_to :room, InfoCare.Room
-    belongs_to :booking_type, InfoCare.BookingType
 
     timestamps
   end
 
   @required_fields ~w(ic_booking_id)
-  @optional_fields ~w(day_status date start_time end_time reminder_time expiry_time reminder_time absent rebooked utilisation day_status permanent_booking service_id contact_id child_id room_id booking_type_id)
+  @optional_fields ~w(start_time absent end_time date service_id parent_id child_id)
 
   @doc """
   Creates a changeset based on the `model` and `params`.

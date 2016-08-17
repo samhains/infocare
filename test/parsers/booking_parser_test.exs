@@ -2,6 +2,8 @@ defmodule InfoCare.BookingParserTest do
   use ExUnit.Case, async: false
   use InfoCare.ConnCase
 
+  require IEx
+
   alias InfoCare.BookingMocks
   alias InfoCare.BookingParser
   alias InfoCare.ServiceFixtures
@@ -15,34 +17,26 @@ defmodule InfoCare.BookingParserTest do
     service |> RoomFixtures.room_2 |> Repo.insert!
   end
 
-
   test "returns list of bookings from api data and service array" do
     service = prepare_db
 
-    bookings_data = BookingMocks.valid_response_body
+    bookings =
+      BookingMocks.valid_response_body
       |> Poison.decode!
-    bookings_data_by_room_id = Repo.all(from r in Room)
-      |> Enum.reduce(%{}, fn(room, total) -> Map.put(total, room.id, bookings_data[room.sync_id]) end)
-
-    bookings = BookingParser.parse bookings_data_by_room_id, service
+      |> BookingParser.parse(service)
 
     test_booking =
-      %{
-        absent: false, child_sync_id: "62b71ab7-d305-e611-80cb-00155d02dd3b",
-          date: ~N[2016-07-04 00:00:00], day_status: "1",
-          end_time: ~N[2016-07-04 13:00:00], expiry_time: ~N[2016-07-04 13:00:00],
-          permanent_booking: "true", reminder_time: ~N[2016-07-04 08:00:00],
-          start_time: ~N[2016-07-04 12:00:00],
-          utilisation: "1"
-       }
+      %{absent: false, date: ~N[2016-07-04 00:00:00],
+        end_time: ~N[2016-07-04 12:40:00], ic_booking_id: "136743",
+        ic_child_id: "672", ic_parent_id: "5253",
+        start_time: ~N[2016-07-04 07:00:00]}
 
     first_booking =
       bookings
       |> List.first
-      # remove the service and room id's as these change from test to test
       |> Map.delete(:service_id)
-      |> Map.delete(:room_id)
 
     assert Map.equal?(test_booking, first_booking)
+    assert length(bookings) == 191
   end
 end

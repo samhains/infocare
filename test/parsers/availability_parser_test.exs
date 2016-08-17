@@ -10,8 +10,6 @@ defmodule InfoCare.AvailabilityParserTest do
 
   defp prepare_db do
     service = ServiceFixtures.service_1 |> Repo.insert!
-    service |> RoomFixtures.room_1 |> Repo.insert!
-    service |> RoomFixtures.room_2 |> Repo.insert!
   end
 
 
@@ -20,9 +18,6 @@ defmodule InfoCare.AvailabilityParserTest do
 
     bookings_data = BookingMocks.valid_response_body
       |> Poison.decode!
-    bookings_data_by_room_id = Repo.all(from r in Room)
-      |> Enum.reduce(%{}, fn(room, total) -> Map.put(total, room.id, bookings_data[room.sync_id]) end)
-
     test_availability = %{capacity: 8, date: ~N[2016-07-04 00:00:00], open: true, used: 3}
 
     availabilities =
