@@ -47,7 +47,7 @@ defmodule InfoCare.UpdateBookingsTest do
       ic_booking_id = "136743"
       booking =  Repo.one(from b in Booking, where: b.ic_booking_id == ^ic_booking_id, preload: [:service, :child])
       assert booking.child_id == child.id
-      assert booking.service.ic_service_id == "317913"
+      assert booking.service.ic_service_id == "671"
 
     end
   end

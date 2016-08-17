@@ -6,7 +6,7 @@ defmodule InfoCare.Child do
     field :first_name, :string
     field :last_name, :string
     field :ic_child_id, :string
-    field :dob, Timex.Ecto.Date
+    field :dob, Timex.Ecto.DateTime
     belongs_to :parent, InfoCare.Parent
     belongs_to :service, InfoCare.Service
     has_many :bookings, InfoCare.Booking
