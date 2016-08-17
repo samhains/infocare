@@ -37,7 +37,7 @@ config :phoenix, :stacktrace_depth, 20
 config :infocare, InfoCare.Repo,
   adapter: Ecto.Adapters.Postgres,
   username: "postgres",
-  password: "postgres",
+  password: "l99l",
   database: "infocare_dev",
   hostname: "localhost",
   pool_size: 10

@@ -25,8 +25,8 @@ defmodule InfoCare.UpdateBookingsTest do
 
   test "saves bookings to database" do
     prepare_db
-    with_mock HTTPoison, [post: fn(_url, _body) -> {:ok, BookingMocks.valid_response} end] do
-      HTTPoison.post(@get_bookings_url, [foo: :bar])
+    with_mock HTTPoison, [post: fn(_url, _body, _headers) -> {:ok, BookingMocks.valid_response} end] do
+      HTTPoison.post(@get_bookings_url, %{}, [foo: :bar])
       InfoCare.UpdateBookings.run
       assert Repo.one(from b in Booking, select: count("*")) == 191
     end
@@ -36,8 +36,8 @@ defmodule InfoCare.UpdateBookingsTest do
 
   test "booking is associated with service, parent and child" do
     prepare_db
-    with_mock HTTPoison, [post: fn(_url, _body) -> {:ok, BookingMocks.valid_response} end] do
-      HTTPoison.post(@get_bookings_url, [foo: :bar])
+    with_mock HTTPoison, [post: fn(_url, _body, _headers) -> {:ok, BookingMocks.valid_response} end] do
+      HTTPoison.post(@get_bookings_url, %{}, [foo: :bar])
       InfoCare.UpdateBookings.run
 
       ic_child_id = "672"
@@ -47,20 +47,20 @@ defmodule InfoCare.UpdateBookingsTest do
       ic_booking_id = "136743"
       booking =  Repo.one(from b in Booking, where: b.ic_booking_id == ^ic_booking_id, preload: [:service, :child])
       assert booking.child_id == child.id
-      assert booking.service.ic_service_id == "317913"
+      assert booking.service.ic_service_id == "671"
 
     end
   end
 
   test "will update booking information if it changes" do
     prepare_db
-    with_mock HTTPoison, [post: fn(_url, _body) -> {:ok, BookingMocks.valid_response} end] do
-      HTTPoison.post(@get_bookings_url, [foo: :bar])
+    with_mock HTTPoison, [post: fn(_url, _body, _headers) -> {:ok, BookingMocks.valid_response} end] do
+      HTTPoison.post(@get_bookings_url, %{}, [foo: :bar])
       InfoCare.UpdateBookings.run
     end
 
-    with_mock HTTPoison, [post: fn(_url, _body) -> {:ok, BookingMocks.update_response} end] do
-      HTTPoison.post(@get_bookings_url, [foo: :bar])
+    with_mock HTTPoison, [post: fn(_url, _body, _headers) -> {:ok, BookingMocks.update_response} end] do
+      HTTPoison.post(@get_bookings_url, %{}, [foo: :bar])
       InfoCare.UpdateBookings.run
 
       ic_booking_id = "136743"

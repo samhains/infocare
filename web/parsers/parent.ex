@@ -6,8 +6,8 @@ defmodule InfoCare.ParentParser do
   require IEx
 
 
-  def all do
-    case Api.get_parents  do
+  def by_service service do
+    case Api.get_parents_by_service service  do
       {:ok, response} ->
         parents = parse(response)
         {:ok, parents}

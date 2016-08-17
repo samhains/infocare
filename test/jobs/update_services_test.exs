@@ -15,8 +15,8 @@ defmodule InfoCare.UpdateServicesTest do
   @get_services_url "mockurl.com"
 
   defp mock_api_and_run_job do
-    with_mock HTTPoison, [post: fn(_url, _headers) -> {:ok, ServiceMocks.valid_response} end] do
-      HTTPoison.post(@get_services_url, [foo: :bar])
+    with_mock HTTPoison, [post: fn(_url, _body, _headers) -> {:ok, ServiceMocks.valid_response} end] do
+      HTTPoison.post(@get_services_url, %{}, [foo: :bar])
       services = InfoCare.UpdateServices.run
     end
   end
@@ -29,8 +29,8 @@ defmodule InfoCare.UpdateServicesTest do
   end
 
   test "returns error for invalid api response" do
-    with_mock HTTPoison, [post: fn(_url, _headers) -> {:error, SharedMocks.invalid_response} end] do
-      HTTPoison.post(@get_services_url, [foo: :bar])
+    with_mock HTTPoison, [post: fn(_url, _body, _headers) -> {:error, SharedMocks.invalid_response} end] do
+      HTTPoison.post(@get_services_url, %{}, [foo: :bar])
 
       services = InfoCare.UpdateServices.run
       {error, reason} = services
@@ -56,13 +56,13 @@ defmodule InfoCare.UpdateServicesTest do
   test "updates existing services and their associations given valid inputs" do
     mock_api_and_run_job
 
-    with_mock HTTPoison, [post: fn(_url, _headers) -> {:ok, ServiceMocks.update_response} end] do
-      HTTPoison.post(@get_services_url, [foo: :bar])
+    with_mock HTTPoison, [post: fn(_url, _body, _headers) -> {:ok, ServiceMocks.update_response} end] do
+      HTTPoison.post(@get_services_url, %{}, [foo: :bar])
       ic_service_id = "671"
       services = InfoCare.UpdateServices.run
       service = Repo.one(from s in Service, where: s.ic_service_id == ^ic_service_id, preload: [:rooms])
       rooms = service.rooms
-      room = rooms |> List.first
+      room = rooms |> List.last
 
       assert service.phone_number == "09 5799553"
       assert service.name == "Infocare Test 2"

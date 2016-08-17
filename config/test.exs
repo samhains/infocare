@@ -13,7 +13,7 @@ config :logger, level: :warn
 config :infocare, InfoCare.Repo,
   adapter: Ecto.Adapters.Postgres,
   username: "postgres",
-  password: "postgres",
+  password: "l99l",
   database: "infocare_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
