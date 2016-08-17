@@ -34,8 +34,37 @@ defmodule InfoCare.UpdateBookings do
     ic_child_id = booking.ic_child_id
     child = Repo.one(from c in Child, where: c.ic_child_id == ^ic_child_id)
     child_id = if child, do: child.id
-    booking |> Map.put(:child_id, child_id)
+
+    # is the child over or under 2 on the date of the booking
+    booking
+    |> add_age_to_booking(child)
+    |> Map.put(:child_id, child_id)
   end
+
+  def add_age_to_booking(booking, nil) do
+    booking
+  end
+
+  def add_age_to_booking(booking, child) do
+    over_2 =
+      child
+      |> is_older_than_two_at_date(booking.date)
+
+    booking
+    |> Map.put(:over_2, over_2)
+  end
+
+  def is_older_than_two_at_date(child, date) do
+    two_years_old = date |> Timex.shift(years: -2)
+
+    case Timex.compare(two_years_old, child.dob) do
+      -1 ->
+        false
+      _ ->
+        true
+    end
+  end
+
 
   def associate_parent(booking) do
     ic_parent_id = booking.ic_parent_id

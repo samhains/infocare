@@ -8,6 +8,7 @@ defmodule InfoCare.Booking do
     field :end_time, Timex.Ecto.DateTime
     field :date, Timex.Ecto.DateTime
     field :absent, :boolean
+    field :over_2, :boolean
     belongs_to :service, InfoCare.Service
     belongs_to :parent, InfoCare.Parent
     belongs_to :child, InfoCare.Child
@@ -16,7 +17,7 @@ defmodule InfoCare.Booking do
   end
 
   @required_fields ~w(ic_booking_id)
-  @optional_fields ~w(start_time absent end_time date service_id parent_id child_id)
+  @optional_fields ~w(over_2 start_time absent end_time date service_id parent_id child_id)
 
   @doc """
   Creates a changeset based on the `model` and `params`.

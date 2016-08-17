@@ -20,8 +20,16 @@ defmodule InfoCare.UpdateBookingsTest do
   defp prepare_db do
     service = ServiceFixtures.service_1 |> Repo.insert!
     ChildFixtures.child_1(service) |> Repo.insert!
+    ChildFixtures.child_2(service) |> Repo.insert!
+    ChildFixtures.child_3(service) |> Repo.insert!
+    service
   end
 
+  defp add_age_to_booking_test(child, is_over) do
+    booking = %{date: ~N[2016-06-01 09:00:00]}
+    booking_updated = InfoCare.UpdateBookings.add_age_to_booking(booking, child)
+    assert booking_updated.over_2 == is_over
+  end
 
   test "saves bookings to database" do
     prepare_db
@@ -31,8 +39,6 @@ defmodule InfoCare.UpdateBookingsTest do
       assert Repo.one(from b in Booking, select: count("*")) == 191
     end
   end
-
-  # TODO implement test for parent association
 
   test "booking is associated with service, parent and child" do
     prepare_db

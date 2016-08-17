@@ -14,8 +14,8 @@ defmodule InfoCare.Child do
     timestamps
   end
 
-  @required_fields ~w(ic_child_id parent_id)
-  @optional_fields ~w(dob first_name service_id last_name)
+  @required_fields ~w(ic_child_id parent_id dob)
+  @optional_fields ~w(first_name service_id last_name)
   @doc """
   Creates a changeset based on the `model` and `params`.
 
