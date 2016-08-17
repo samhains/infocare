@@ -2,18 +2,18 @@ defmodule InfoCare.Availability do
   use InfoCare.Web, :model
 
   schema "availabilities" do
-    field :date, Timex.Ecto.DateTime
-    field :open, :boolean
-    field :used, :integer
-    field :capacity, :integer
-    belongs_to :room, InfoCare.Room
+    field :start_time, Timex.Ecto.DateTime
+    field :end_time, Timex.Ecto.DateTime
+    field :over_2, :integer
+    field :under_2, :integer
+    field :total, :integer
     belongs_to :service, InfoCare.Service
 
     timestamps
   end
 
-  @required_fields ~w(date open used capacity room_id)
-  @optional_fields ~w(service_id)
+  @required_fields ~w(start_time end_time over_2 under_2 total service_id)
+  @optional_fields ~w()
 
   @doc """
   Creates a changeset based on the `model` and `params`.

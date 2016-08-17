@@ -22,25 +22,23 @@ defmodule InfoCare.UpdateAvailabilitiessTest do
     service = ServiceFixtures.service_1 |> Repo.insert!
   end
 
-  # test "saves availabilities to database" do
-  #   prepare_db
+  test "saves availabilities to database" do
+    prepare_db
 
-  #   with_mock HTTPoison, [get: fn(_url, _headers) -> {:ok, BookingMocks.valid_response} end] do
+    with_mock HTTPoison, [get: fn(_url, _headers) -> {:ok, BookingMocks.valid_response} end] do
 
-  #     service = Repo.one(from s in Service)
-  #     HTTPoison.get(@get_bookings_url, [foo: :bar])
+      service = Repo.one(from s in Service)
+      HTTPoison.get(@get_bookings_url, [foo: :bar])
 
-  #     InfoCare.UpdateAvailabilities.run
-  #     availabilities = Repo.all(from a in Availability)
-  #     availability_1 = availabilities |> List.first
-  #     availability_3 = availabilities |> List.last
-  #     assert length(availabilities) == 3
-  #     assert availability_1.room_id == room_1_id
-  #     assert availability_3.room_id == room_2_id
-  #   end
-  # end
-
-  # # Having a problem with HTTPoison, it wont let me run HTTPoison.get/2. until now I cannot return an error from the request *shrugs*
+      InfoCare.UpdateAvailabilities.run
+      availabilities = Repo.all(from a in Availability)
+      availability_1 = availabilities |> List.first
+      availability_3 = availabilities |> List.last
+      assert length(availabilities) == 3
+      assert availability_1.room_id == room_1_id
+      assert availability_3.room_id == room_2_id
+    end
+  end
 
   # test "updates availability for the room if details change " do
   #   prepare_db
