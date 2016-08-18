@@ -41,18 +41,29 @@ defmodule InfoCare.UpdateAvailabilities do
 
         all = Repo.one(from b in Booking, select: count("*"))
         total = Repo.one(from b in Booking, select: count("*"), where: [date: ^end_date])
-        over_2 = Repo.one(from b in Booking, select: count("*"), where: [date: ^end_date, over_2: true])
-        under_2 = Repo.one(from b in Booking, select: count("*"), where: [date: ^end_date, over_2: false])
+        over_2 =
+          if total == 0 do
+            service.max_o2
+          else
+            Repo.one(from b in Booking, select: count("*"), where: [date: ^end_date, over_2: true])
+          end
+
+        under_2 =
+          if total == 0 do
+            service.max_u2
+          else
+            Repo.one(from b in Booking, select: count("*"), where: [date: ^end_date, over_2: false])
+          end
 
         availability =
-          %{
-            :total => total,
-            :date => end_date,
-            :over_2 => over_2,
-            :under_2 => under_2,
-            :service_id => service.id
-          }
-          |> save_availability
+        %{
+          :total => service.capacity - total,
+          :date => end_date,
+          :over_2 => service.max_o2 - over_2,
+          :under_2 => service.max_u2 - under_2,
+          :service_id => service.id
+        }
+        |> save_availability
       end)
   end
 end

@@ -19,17 +19,42 @@ defmodule InfoCare.UpdateAvailabilitiessTest do
 
   @get_bookings_url "mock.url"
 
-  defp prepare_db do
-    service = ServiceFixtures.service_1 |> Repo.insert!
+  defp prepare_db service do
+    service = service |> Repo.insert!
     bookings = Repo.insert_all Booking, BookingFixtures.bookings(service)
 
   end
 
   test "saves availabilities to database" do
-    prepare_db
-
+    prepare_db ServiceFixtures.service_1
     InfoCare.UpdateAvailabilities.run(~N[2016-07-04 00:00:00])
+    availabilities = Repo.all(Availability)
+    first_availability = availabilities |> List.first
 
+    # total capacity 35
+    # o2 capacity 15
+    # u2 capacity 20
+
+    # total used 23
+    # o2 used 13
+    # u2 used 10
+
+    assert first_availability.over_2 == 2
+    assert first_availability.under_2 == 10
+    assert first_availability.total == 12
+    assert length(availabilities) == 14
+  end
+
+  test "over_2 and under_2 availabilities zero when total is zero" do
+    prepare_db ServiceFixtures.service_2
+    InfoCare.UpdateAvailabilities.run(~N[2016-07-04 00:00:00])
+    availabilities = Repo.all(Availability)
+    first_availability = availabilities |> List.first
+
+    assert first_availability.over_2 == 0
+    assert first_availability.under_2 == 0
+    assert first_availability.total == 0
+    assert length(availabilities) == 14
   end
 
   # test "updates availability for the room if details change " do
