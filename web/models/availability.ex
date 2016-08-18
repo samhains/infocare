@@ -2,8 +2,7 @@ defmodule InfoCare.Availability do
   use InfoCare.Web, :model
 
   schema "availabilities" do
-    field :start_time, Timex.Ecto.DateTime
-    field :end_time, Timex.Ecto.DateTime
+    field :date, Timex.Ecto.DateTime
     field :over_2, :integer
     field :under_2, :integer
     field :total, :integer

@@ -2,6 +2,7 @@ defmodule InfoCare.UpdateAvailabilities do
   use Timex
   alias InfoCare.Availability
   alias InfoCare.Service
+  alias InfoCare.Booking
   alias InfoCare.AvailabilityParser
   alias InfoCare.Repo
   require IEx
@@ -11,9 +12,9 @@ defmodule InfoCare.UpdateAvailabilities do
 
   require Logger
 
-  def run do
+  def run date do
     Repo.all(Service)
-    |> Stream.map(&update_availabilities_for_service/1)
+    |> Stream.map(fn (service) -> update_availabilities_for_service(date, service) end)
     |> Stream.run
   end
 
@@ -26,29 +27,33 @@ defmodule InfoCare.UpdateAvailabilities do
     |> insert_or_update_record_and_print_errors(Availability, %Availability{}, query)
   end
 
-  def update_availabilities_for_service service do
+  defp shift_date_by_num start_date, num do
+    start_date
+    |> Timex.shift(days: num)
+  end
 
-    {:ok, start_date} =
-      Timex.now
-      |> Timex.format("%F", :strftime)
+  def update_availabilities_for_service date, service do
 
-    {:ok, end_date} =
-      Timex.now
-      |> Timex.shift(days: 14)
-      |> Timex.format("%F", :strftime)
+    date_list =
+      for(n <- 0..13, do: n)
+      |> Enum.map(fn (num) -> shift_date_by_num(date, num) end)
+      |> Enum.map(fn(end_date)->[state: "Sweden"]
 
+        all = Repo.one(from b in Booking, select: count("*"))
+        total = Repo.one(from b in Booking, select: count("*"), where: [date: ^end_date])
+        over_2 = Repo.one(from b in Booking, select: count("*"), where: [date: ^end_date, over_2: true])
+        under_2 = Repo.one(from b in Booking, select: count("*"), where: [date: ^end_date, over_2: false])
+        availability = 
+          %{
+            :total => total,
+            :date => end_date,
+            :over_2 => over_2,
+            :under_2 => under_2
+          }
+
+        IO.inspect availability
+      end)
     # get the bookings for the date range for the service
 
-    case AvailabilityParser.by_service(service, start_date, end_date)  do
-
-      {:ok, availabilities} ->
-        data =
-          availabilities
-          |> Enum.map(&save_availability/1)
-        {:ok, data}
-      {:error, error} ->
-        Logger.error (inspect error.reason)
-        {:error, error}
-    end
   end
 end

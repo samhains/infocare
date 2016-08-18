@@ -41,7 +41,9 @@ defmodule InfoCare.ServiceParser do
         ic_service_id: to_string(service_data["ServiceID"]),
         name: service_data["Name"],
         email: service_data["Email"],
-        licensed_capacity: to_string(service_data["LicensedCapacity"]),
+        capacity: service_data["MaxChildren"],
+        max_o2: service_data["MaxO2"],
+        max_u2: service_data["MaxU2"],
         phone_number: service_data["PhoneNumber"]
       }
   end

@@ -14,7 +14,7 @@ defmodule InfoCare.ServiceParserTest do
       |> ServiceParser.parse
 
     first_service = services |> List.first
-    test_service = %{currency: "NZD", email: "russell@info-care.biz", ic_service_id: "671", licensed_capacity: "35", name: "Infocare Test", phone_number: "09 4799553", post_code: "1311", rooms: [%{name: "Holiday"}, %{name: "Tui Room"}], street: "3-92 Churchill Road", suburb: "Rothesay Bay"}
+    test_service = %{currency: "NZD", email: "russell@info-care.biz", ic_service_id: "671", capacity: 35, max_o2: 15, max_u2: 20, name: "Infocare Test", phone_number: "09 4799553", post_code: "1311", rooms: [%{name: "Holiday"}, %{name: "Tui Room"}], street: "3-92 Churchill Road", suburb: "Rothesay Bay"}
 
     assert length(services) == 8
     assert Map.equal?(test_service, first_service)

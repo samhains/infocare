@@ -25,6 +25,7 @@ defmodule InfoCare.BookingParserTest do
       |> Poison.decode!
       |> BookingParser.parse(service)
 
+    IO.inspect bookings
     test_booking =
       %{absent: false, date: ~N[2016-07-04 00:00:00],
         end_time: ~N[2016-07-04 12:40:00], ic_booking_id: "136743",

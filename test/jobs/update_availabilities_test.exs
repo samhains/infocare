@@ -7,37 +7,43 @@ defmodule InfoCare.UpdateAvailabilitiessTest do
   alias InfoCare.BookingMocks
   alias InfoCare.Repo
   alias InfoCare.Api
+  alias InfoCare.Booking
   alias InfoCare.SharedMocks
   alias InfoCare.ServiceFixtures
-  alias InfoCare.RoomFixtures
+  alias InfoCare.BookingFixtures
   alias InfoCare.Room
   alias InfoCare.Service
 
   import Mock
   import Ecto.Query
 
-  @get_bookings_url "https://www.qkenhanced.com.au/Enhanced.KindyNow/v1/Bookings/GetAll?source=update&serviceIds=317913&databaseId=5012&startDate=2016-08-03&endDate=2016-08-17"
+  @get_bookings_url "mock.url"
 
   defp prepare_db do
     service = ServiceFixtures.service_1 |> Repo.insert!
+    bookings = Repo.insert_all Booking, BookingFixtures.bookings(service)
+
   end
 
   test "saves availabilities to database" do
     prepare_db
 
-    with_mock HTTPoison, [get: fn(_url, _headers) -> {:ok, BookingMocks.valid_response} end] do
+    availability =
+      availability =
+      %{
+        :total => total,
+        :date => end_date,
+        :over_2 => over_2,
+        :under_2 => under_2
+      }
+      %{
+        :total => total,
+        :date => end_date,
+        :over_2 => over_2,
+        :under_2 => under_2
+      }
+    InfoCare.UpdateAvailabilities.run(~N[2016-07-04 00:00:00])
 
-      service = Repo.one(from s in Service)
-      HTTPoison.get(@get_bookings_url, [foo: :bar])
-
-      InfoCare.UpdateAvailabilities.run
-      availabilities = Repo.all(from a in Availability)
-      availability_1 = availabilities |> List.first
-      availability_3 = availabilities |> List.last
-      assert length(availabilities) == 3
-      assert availability_1.room_id == room_1_id
-      assert availability_3.room_id == room_2_id
-    end
   end
 
   # test "updates availability for the room if details change " do

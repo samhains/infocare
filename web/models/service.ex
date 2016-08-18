@@ -1,14 +1,16 @@
 defmodule InfoCare.Service do
   require IEx
   use InfoCare.Web, :model
-  @derive {Poison.Encoder, only: [:ic_service_id, :name, :email, :currency, :licensed_capacity, :phone_number, :time_zone, :street, :suburb, :state, :country, :post_code]}
+  @derive {Poison.Encoder, only: [:ic_service_id, :name, :email, :currency, :phone_number, :time_zone, :street, :suburb, :state, :country, :post_code]}
 
   schema "services" do
     field :ic_service_id, :string
     field :name, :string
     field :email, :string
     field :currency, :string
-    field :licensed_capacity, :string
+    field :capacity, :integer
+    field :max_o2, :integer
+    field :max_u2, :integer
     field :phone_number, :string
     field :time_zone, :string
     field :street, :string
@@ -22,7 +24,7 @@ defmodule InfoCare.Service do
   end
 
   @required_fields ~w(ic_service_id)
-  @optional_fields ~w(name email currency licensed_capacity phone_number time_zone street suburb state country post_code)
+  @optional_fields ~w(name email currency max_o2 max_u2 capacity phone_number time_zone street suburb state country post_code)
 
   @doc """
   Creates a changeset based on the `model` and `params`.
