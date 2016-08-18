@@ -28,20 +28,6 @@ defmodule InfoCare.UpdateAvailabilitiessTest do
   test "saves availabilities to database" do
     prepare_db
 
-    availability =
-      availability =
-      %{
-        :total => total,
-        :date => end_date,
-        :over_2 => over_2,
-        :under_2 => under_2
-      }
-      %{
-        :total => total,
-        :date => end_date,
-        :over_2 => over_2,
-        :under_2 => under_2
-      }
     InfoCare.UpdateAvailabilities.run(~N[2016-07-04 00:00:00])
 
   end

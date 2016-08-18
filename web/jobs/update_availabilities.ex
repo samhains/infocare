@@ -37,21 +37,21 @@ defmodule InfoCare.UpdateAvailabilities do
     date_list =
       for(n <- 0..13, do: n)
       |> Enum.map(fn (num) -> shift_date_by_num(date, num) end)
-      |> Enum.map(fn(end_date)->[state: "Sweden"]
+      |> Enum.map(fn(end_date)->
 
         all = Repo.one(from b in Booking, select: count("*"))
         total = Repo.one(from b in Booking, select: count("*"), where: [date: ^end_date])
         over_2 = Repo.one(from b in Booking, select: count("*"), where: [date: ^end_date, over_2: true])
         under_2 = Repo.one(from b in Booking, select: count("*"), where: [date: ^end_date, over_2: false])
-        availability = 
+
+        availability =
           %{
             :total => total,
             :date => end_date,
             :over_2 => over_2,
-            :under_2 => under_2
+            :under_2 => under_2,
+            :service_id => service.id
           }
-
-        IO.inspect availability
       end)
     # get the bookings for the date range for the service
 

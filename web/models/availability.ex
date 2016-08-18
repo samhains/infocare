@@ -11,7 +11,7 @@ defmodule InfoCare.Availability do
     timestamps
   end
 
-  @required_fields ~w(start_time end_time over_2 under_2 total service_id)
+  @required_fields ~w(over_2 under_2 total service_id date)
   @optional_fields ~w()
 
   @doc """
