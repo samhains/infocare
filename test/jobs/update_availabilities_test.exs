@@ -51,9 +51,9 @@ defmodule InfoCare.UpdateAvailabilitiessTest do
     availabilities = Repo.all(Availability)
     first_availability = availabilities |> List.first
 
+    assert first_availability.total == 0
     assert first_availability.over_2 == 0
     assert first_availability.under_2 == 0
-    assert first_availability.total == 0
     assert length(availabilities) == 14
   end
 

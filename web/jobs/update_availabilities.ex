@@ -32,6 +32,14 @@ defmodule InfoCare.UpdateAvailabilities do
     |> Timex.shift(days: num)
   end
 
+  def calculate_age_group_capacity total_capacity, group_capacity, end_date, over_2 do
+    if total_capacity == 0 do
+      0
+    else
+      group_capacity - Repo.one(from b in Booking, select: count("*"), where: [date: ^end_date, over_2: ^over_2])
+    end
+  end
+
   def update_availabilities_for_service date, service do
 
     date_list =
@@ -40,27 +48,17 @@ defmodule InfoCare.UpdateAvailabilities do
       |> Enum.map(fn(end_date)->
 
         all = Repo.one(from b in Booking, select: count("*"))
-        total = Repo.one(from b in Booking, select: count("*"), where: [date: ^end_date])
-        over_2 =
-          if total == 0 do
-            service.max_o2
-          else
-            Repo.one(from b in Booking, select: count("*"), where: [date: ^end_date, over_2: true])
-          end
+        total = service.capacity - Repo.one(from b in Booking, select: count("*"), where: [date: ^end_date])
+        over_2 = calculate_age_group_capacity total, service.max_o2, end_date, true
+        under_2 = calculate_age_group_capacity total, service.max_u2, end_date, false
 
-        under_2 =
-          if total == 0 do
-            service.max_u2
-          else
-            Repo.one(from b in Booking, select: count("*"), where: [date: ^end_date, over_2: false])
-          end
 
         availability =
         %{
-          :total => service.capacity - total,
+          :total => total,
           :date => end_date,
-          :over_2 => service.max_o2 - over_2,
-          :under_2 => service.max_u2 - under_2,
+          :over_2 => over_2,
+          :under_2 => under_2,
           :service_id => service.id
         }
         |> save_availability

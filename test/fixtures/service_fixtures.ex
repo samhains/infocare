@@ -23,7 +23,7 @@ defmodule InfoCare.ServiceFixtures do
       ic_service_id: "679",
       capacity: 23,
       max_o2: 15,
-      max_u2: 10,
+      max_u2: 15,
       name: "First Steps Parnell",
       phone_number: "09 479955",
       post_code: "1311",
