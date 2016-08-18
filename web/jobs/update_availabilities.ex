@@ -20,8 +20,8 @@ defmodule InfoCare.UpdateAvailabilities do
 
   def save_availability availability do
     date = availability.date
-    room_id = availability.room_id
-    query = from a in Availability, where: [date: type(^availability.date, Timex.Ecto.DateTime), room_id: ^room_id]
+    service_id = availability.service_id
+    query = from a in Availability, where: [date: type(^availability.date, Timex.Ecto.DateTime), service_id: ^service_id]
 
     availability
     |> insert_or_update_record_and_print_errors(Availability, %Availability{}, query)
@@ -52,8 +52,7 @@ defmodule InfoCare.UpdateAvailabilities do
             :under_2 => under_2,
             :service_id => service.id
           }
+          |> save_availability
       end)
-    # get the bookings for the date range for the service
-
   end
 end

@@ -7,12 +7,13 @@ defmodule InfoCare.Availability do
     field :under_2, :integer
     field :total, :integer
     belongs_to :service, InfoCare.Service
+    belongs_to :session, InfoCare.Session
 
     timestamps
   end
 
   @required_fields ~w(over_2 under_2 total service_id date)
-  @optional_fields ~w()
+  @optional_fields ~w(session_id)
 
   @doc """
   Creates a changeset based on the `model` and `params`.
