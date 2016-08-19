@@ -31,6 +31,13 @@ defmodule InfoCare.ServiceParser do
       rooms_data
       |> Enum.map(&parse_room/1)
 
+    # MaxU2 = 0 means the service is not licensed for under two children
+    # MaxO2 = 0 means that there is no upper limit on the over two children, so MaxChildren becomes the limit
+
+    capacity = service_data["MaxChildren"]
+    max_o2 = service_data["MaxO2"]
+    max_o2 = if max_o2 == "0", do: capacity, else: max_o2
+
     service =
       %{
         post_code:  to_string(service_data["AddressPostCode"]),
@@ -41,8 +48,8 @@ defmodule InfoCare.ServiceParser do
         ic_service_id: to_string(service_data["ServiceID"]),
         name: service_data["Name"],
         email: service_data["Email"],
-        capacity: service_data["MaxChildren"],
-        max_o2: service_data["MaxO2"],
+        capacity: capacity,
+        max_o2: max_o2,
         max_u2: service_data["MaxU2"],
         phone_number: service_data["PhoneNumber"]
       }
