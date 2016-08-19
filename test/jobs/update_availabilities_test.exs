@@ -22,7 +22,7 @@ defmodule InfoCare.UpdateAvailabilitiessTest do
   defp prepare_db service do
     service = service |> Repo.insert!
     bookings = Repo.insert_all Booking, BookingFixtures.bookings(service)
-
+    service
   end
 
   test "saves availabilities to database" do
@@ -32,16 +32,16 @@ defmodule InfoCare.UpdateAvailabilitiessTest do
     # o2 capacity 15
     # u2 capacity 20
 
-    # total used 23
-    # o2 used 13
+    # total used 22
+    # o2 used 12
     # u2 used 10
 
     availabilities = Repo.all(Availability)
     first_availability = availabilities |> List.first
 
-    assert first_availability.over_2 == 2
+    assert first_availability.over_2 == 3
     assert first_availability.under_2 == 10
-    assert first_availability.total == 12
+    assert first_availability.total == 13
     assert length(availabilities) == 14
   end
 
@@ -58,20 +58,21 @@ defmodule InfoCare.UpdateAvailabilitiessTest do
   end
 
   test "updates availability for the room if details change" do
-    prepare_db ServiceFixtures.service_1
-    InfoCare.UpdateAvailabilities.run(~N[2016-07-04 00:00:00])
+    service = prepare_db ServiceFixtures.service_1
+    availability_date = ~N[2016-07-04 00:00:00]
+
+    InfoCare.UpdateAvailabilities.run(availability_date)
     ic_booking_id = "136743"
     booking = Repo.one(from b in Booking, where: b.ic_booking_id == ^ic_booking_id)
-    booking = Ecto.Changeset.change booking, over_2: false
+    booking = Ecto.Changeset.change booking, [absent: true]
     Repo.update!(booking)
 
-    InfoCare.UpdateAvailabilities.run(~N[2016-07-04 00:00:00])
-    availabilities = Repo.all(Availability)
-    first_availability = availabilities |> List.first
+    InfoCare.UpdateAvailabilities.run(availability_date)
 
-    assert first_availability.over_2 == 3
-    assert first_availability.under_2 == 9
-    assert first_availability.total == 12
-    assert length(availabilities) == 14
+    availability = Repo.one(from a in Availability, where: [date: type(^availability_date, Timex.Ecto.DateTime), service_id: ^service.id])
+
+    assert availability.over_2 == 4
+    assert availability.under_2 == 10
+    assert availability.total == 14
   end
 end

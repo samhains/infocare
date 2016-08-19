@@ -36,32 +36,31 @@ defmodule InfoCare.UpdateAvailabilities do
     if total_capacity == 0 do
       0
     else
-      group_capacity - Repo.one(from b in Booking, select: count("*"), where: [date: ^end_date, over_2: ^over_2])
+      group_capacity - Repo.one(from b in Booking, select: count("*"), where: [date: ^end_date, over_2: ^over_2, absent: false])
     end
   end
 
   def update_availabilities_for_service date, service do
 
-    date_list =
-      for(n <- 0..13, do: n)
-      |> Enum.map(fn (num) -> shift_date_by_num(date, num) end)
-      |> Enum.map(fn(end_date)->
+    for(n <- 0..13, do: n)
+    |> Enum.map(fn (num) -> shift_date_by_num(date, num) end)
+    |> Enum.map(fn(end_date)->
 
-        all = Repo.one(from b in Booking, select: count("*"))
-        total_capacity = service.capacity - Repo.one(from b in Booking, select: count("*"), where: [date: ^end_date])
-        over_2 = calculate_age_group_capacity total_capacity, service.max_o2, end_date, true
-        under_2 = calculate_age_group_capacity total_capacity, service.max_u2, end_date, false
+      all = Repo.one(from b in Booking, select: count("*"))
+      total_capacity = service.capacity - Repo.one(from b in Booking, select: count("*"), where: [date: ^end_date, absent: false])
+      over_2 = calculate_age_group_capacity total_capacity, service.max_o2, end_date, true
+      under_2 = calculate_age_group_capacity total_capacity, service.max_u2, end_date, false
 
 
-        availability =
-        %{
-          :total => total_capacity,
-          :date => end_date,
-          :over_2 => over_2,
-          :under_2 => under_2,
-          :service_id => service.id
-        }
-        |> save_availability
-      end)
+      availability =
+      %{
+        :total => total_capacity,
+        :date => end_date,
+        :over_2 => over_2,
+        :under_2 => under_2,
+        :service_id => service.id
+      }
+      |> save_availability
+    end)
   end
 end

@@ -6,7 +6,7 @@ defmodule InfoCare.BookingFixtures do
       end_time: ~N[2016-07-04 12:40:00], ic_booking_id: "136743", over_2: true,
       service_id: service.id, inserted_at: Ecto.DateTime.utc, updated_at: Ecto.DateTime.utc,
       start_time: ~N[2016-07-04 07:00:00]},
-    %{absent: false, date: ~N[2016-07-04 00:00:00],
+    %{absent: true, date: ~N[2016-07-04 00:00:00],
       end_time: ~N[2016-07-04 12:40:00], ic_booking_id: "136741", over_2: true,
       service_id: service.id, inserted_at: Ecto.DateTime.utc, updated_at: Ecto.DateTime.utc,
       start_time: ~N[2016-07-04 07:00:00]},

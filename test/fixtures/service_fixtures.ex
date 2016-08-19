@@ -21,7 +21,7 @@ defmodule InfoCare.ServiceFixtures do
       currency: "NZD",
       email: "iain@info-ware.biz",
       ic_service_id: "679",
-      capacity: 23,
+      capacity: 22,
       max_o2: 15,
       max_u2: 15,
       name: "First Steps Parnell",
